@@ -94,7 +94,10 @@ const config = {
   outfile: 'dist/bundle.js',
   bundle: true,
   define: {
-    NODE_ENV
+    NODE_ENV,
+    'process.env': '{}',
+    'process.env.NODE_ENV': NODE_ENV,
+    'process.env.MapboxAccessToken': JSON.stringify('pk.eyJ1Ijoiem1ldmVyIiwiYSI6ImNtYXB1cGllcjAybG8ya29hZ2RxemZ0MHgifQ.MkXn_V9rtSCDSP1MqTgpqg'),
   },
   plugins: [
     dotenvRun({

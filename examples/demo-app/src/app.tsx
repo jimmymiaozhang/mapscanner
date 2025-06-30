@@ -628,6 +628,8 @@ const App = props => {
     _replaceSyncedFilterWTripLayer
   ]);
 
+  // Debug: Log the Mapbox token being passed to KeplerGl
+  console.log('MapboxAccessToken:', CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN);
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
