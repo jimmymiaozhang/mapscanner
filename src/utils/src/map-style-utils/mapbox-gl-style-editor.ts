@@ -98,21 +98,27 @@ export const editBottomMapStyle = memoize(({id, mapStyle, visibleLayerGroups}) =
 }, resolver);
 
 export function getStyleDownloadUrl(styleUrl, accessToken, mapboxApiUrl) {
+  // Debug logging disabled for cleaner console
+  // console.log('🔍 getStyleDownloadUrl called with:', { styleUrl, accessToken: accessToken ? 'TOKEN_PRESENT' : 'NO_TOKEN', mapboxApiUrl });
+  
   if (styleUrl.startsWith('http')) {
+    // console.log('📡 Returning HTTP URL as-is:', styleUrl);
     return styleUrl;
   }
 
   // mapbox://styles/jckr/cjhcl0lxv13di2rpfoytdbdyj
   if (styleUrl.startsWith('mapbox://styles')) {
     const styleId = styleUrl.replace('mapbox://styles/', '');
-
-    // https://api.mapbox.com/styles/v1/heshan0131/cjg1bfumo1cwm2rlrjxkinfgw?pluginName=Keplergl&access_token=<token>
-    return `${
+    const finalUrl = `${
       mapboxApiUrl || DEFAULT_MAPBOX_API_URL
     }/styles/v1/${styleId}?pluginName=Keplergl&access_token=${accessToken}`;
+    
+    // console.log('🗺️ Generated Mapbox URL:', finalUrl);
+    return finalUrl;
   }
 
   // style url not recognized
+  // console.log('❌ Style URL not recognized:', styleUrl);
   return null;
 }
 

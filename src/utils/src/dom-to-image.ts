@@ -121,7 +121,18 @@ function toPixelData(node, options) {
  * @return {Promise} - A promise that is fulfilled with a PNG image data URL
  * */
 function toPng(node, options) {
-  return draw(node, options || {}).then(canvas => canvas.toDataURL());
+  // Add better options for PNG conversion
+  const pngOptions = {
+    ...options,
+    // Reduce quality for better compatibility
+    quality: options.quality || 0.8,
+    // Add cache busting to avoid issues
+    cacheBust: true,
+    // Set a reasonable max size
+    maxSize: options.maxSize || 4096
+  };
+  
+  return draw(node, pngOptions || {}).then(canvas => canvas.toDataURL());
 }
 
 /**
@@ -238,20 +249,46 @@ function inlineImages(node) {
 }
 
 function makeSvgDataUri(node, width, height, escapeXhtmlForWebpack = true) {
-  return Promise.resolve(node).then(nd => {
-    nd.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
-    const serializedString = new Window.XMLSerializer().serializeToString(nd);
-
-    const xhtml = escapeXhtmlForWebpack ? escapeXhtml(serializedString) : serializedString;
-    const foreignObject = `<foreignObject x="0" y="0" width="100%" height="100%">${xhtml}</foreignObject>`;
-    const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${foreignObject}</svg>`;
-
-    // Optimizing SVGs in data URIs
-    // see https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-    // the best way of encoding SVG in a data: URI is data:image/svg+xml,[actual data].
-    // We don’t need the ;charset=utf-8 parameter because the given SVG is ASCII.
-    return svgToMiniDataURI(svgStr);
-  });
+  return Promise.resolve(node)
+    .then(nd => {
+      nd.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+      
+      // Optimize: Remove unnecessary attributes that bloat the SVG
+      const optimizeNode = (element) => {
+        if (element.style) {
+          // Remove redundant styles that are causing issues
+          const stylesToRemove = [
+            'webkit-tap-highlight-color',
+            'webkit-text-size-adjust',
+            'webkit-user-select',
+            'webkit-touch-callout',
+            'webkit-appearance'
+          ];
+          stylesToRemove.forEach(style => {
+            element.style.removeProperty(style);
+          });
+        }
+        
+        // Recursively optimize child elements
+        Array.from(element.children || []).forEach(child => {
+          optimizeNode(child);
+        });
+      };
+      
+      optimizeNode(nd);
+      
+      return new Window.XMLSerializer().serializeToString(nd);
+    })
+    .then(xhtml => {
+      const foreignObject =
+        `<foreignObject x="0" y="0" width="100%" height="100%">${xhtml}</foreignObject>`;
+      
+      // Create optimized SVG with minimal bloat
+      const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${foreignObject}</svg>`;
+      
+      // Use the mini SVG data URI for better compression
+      return svgToMiniDataURI(svgStr);
+    });
 }
 
 function newInliner() {

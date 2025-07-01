@@ -13,11 +13,15 @@ export const LOAD_FILE_TASK = Task.fromPromise(
 export const PROCESS_FILE_DATA = Task.fromPromise(processFileData, 'PROCESS_FILE_CONTENT');
 
 export const LOAD_MAP_STYLE_TASK = taskCreator(
-  ({url, id}, success, error) =>
-    fetch(url)
+  ({url, id}, success, error) => {
+    console.log('🌐 LOAD_MAP_STYLE_TASK fetching:', { id, url });
+    
+    return fetch(url)
       .then(response => {
+        console.log('📥 Response status:', response.status, 'for', id);
         if (!response.ok) {
           return response.text().then(text => {
+            console.error('❌ Error loading style:', id, text);
             error(text);
           });
         }
@@ -25,10 +29,13 @@ export const LOAD_MAP_STYLE_TASK = taskCreator(
       })
       .then(result => {
         if (!result) {
+          console.error('❌ Empty response for style:', id);
           error(new Error('Map style response is empty'));
         }
+        console.log('✅ Successfully loaded style:', id);
         success({id, style: result});
-      }),
+      });
+  },
 
   'LOAD_MAP_STYLE_TASK'
 );

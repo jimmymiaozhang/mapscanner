@@ -4,12 +4,15 @@
 import esbuild from 'esbuild';
 import {replace} from 'esbuild-plugin-replace';
 import {dotenvRun} from '@dotenv-run/esbuild';
+import { config as dotenvConfig } from 'dotenv';
+dotenvConfig();
 
 import process from 'node:process';
 import fs from 'node:fs';
 import {spawn} from 'node:child_process';
 import {join} from 'node:path';
-import KeplerPackage from '../../package.json' assert {type: 'json'};
+import {readFileSync} from 'node:fs';
+const KeplerPackage = JSON.parse(readFileSync('../../package.json', 'utf8'));
 
 const args = process.argv;
 
@@ -97,7 +100,7 @@ const config = {
     NODE_ENV,
     'process.env': '{}',
     'process.env.NODE_ENV': NODE_ENV,
-    'process.env.MapboxAccessToken': JSON.stringify('pk.eyJ1Ijoiem1ldmVyIiwiYSI6ImNtYXB1cGllcjAybG8ya29hZ2RxemZ0MHgifQ.MkXn_V9rtSCDSP1MqTgpqg'),
+    'process.env.MapboxAccessToken': JSON.stringify(process.env.MapboxAccessToken || ''),
   },
   plugins: [
     dotenvRun({
