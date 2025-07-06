@@ -120,13 +120,13 @@ const GlobalStyle = styled.div`
 
 const CONTAINER_STYLE = {
   transition: 'margin 1s, height 1s',
-  position: 'absolute',
+  position: 'relative',
   width: '100%',
   height: '100%',
   left: 0,
   top: 0,
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   backgroundColor: '#333'
 };
 
@@ -148,6 +148,41 @@ const StyledVerticalResizeHandle = styled(PanelResizeHandle)`
 
   &:hover {
     background-color: #555;
+  }
+`;
+
+// Custom styling to override KeplerGl's sidebar positioning
+const StyledKeplerContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  /* Override KeplerGl's sidebar positioning from overlay to fixed side-by-side */
+  .side-panel--container {
+    position: static !important; /* Change from absolute to static */
+    width: 320px !important; /* Fixed width */
+    height: 100% !important;
+    z-index: auto !important; /* Remove high z-index */
+    transform: none !important; /* Remove any transforms */
+    box-shadow: none !important; /* Remove shadow since it's not floating */
+  }
+
+  /* Create the side-by-side layout */
+  .kepler-gl {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  /* Map container takes remaining space */
+  .map-container {
+    flex: 1 !important;
+    width: auto !important;
+    margin-left: 0 !important; /* Remove any left margin */
+  }
+
+  /* Ensure the main container doesn't have padding that affects sidebar */
+  .kepler-gl__header {
+    display: none !important; /* Hide header if present */
   }
 `;
 
@@ -657,19 +692,22 @@ const App = props => {
                     <Panel defaultSize={isSqlPanelOpen ? 60 : 100}>
                       <AutoSizer>
                         {({height, width}) => (
-                          <KeplerGl
-                            mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
-                            id="map"
-                            getState={keplerGlGetState}
-                            width={width}
-                            height={height}
-                            cloudProviders={CLOUD_PROVIDERS}
-                            localeMessages={messages}
-                            onExportToCloudSuccess={onExportFileSuccess}
-                            onLoadCloudMapSuccess={onLoadCloudMapSuccess}
-                            featureFlags={DEFAULT_FEATURE_FLAGS}
-                            onViewStateChange={onViewStateChange}
-                          />
+                          <StyledKeplerContainer>
+                            <KeplerGl
+                              mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
+                              id="map"
+                              getState={keplerGlGetState}
+                              width={width}
+                              height={height}
+                              sidePanelWidth={320} // Set fixed sidebar width
+                              cloudProviders={CLOUD_PROVIDERS}
+                              localeMessages={messages}
+                              onExportToCloudSuccess={onExportFileSuccess}
+                              onLoadCloudMapSuccess={onLoadCloudMapSuccess}
+                              featureFlags={DEFAULT_FEATURE_FLAGS}
+                              onViewStateChange={onViewStateChange}
+                            />
+                          </StyledKeplerContainer>
                         )}
                       </AutoSizer>
                     </Panel>
