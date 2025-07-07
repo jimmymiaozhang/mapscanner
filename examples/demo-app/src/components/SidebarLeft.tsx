@@ -15,10 +15,10 @@ const SidebarContainer = styled.div<SidebarContainerProps>`
   border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
   transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out;
+  z-index: 1;
   
   .sidebar-content {
     width: 320px;

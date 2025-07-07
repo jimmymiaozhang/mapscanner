@@ -11,6 +11,8 @@ const MapContainer = styled.div`
   flex-direction: column;
   position: relative;
   transition: all 0.3s ease-in-out;
+  z-index: 10;
+  box-shadow: -6px 0 12px rgba(0, 0, 0, 0.35), 6px 0 12px rgba(0, 0, 0, 0.35);
 `;
 
 const MapMenuButtons = styled.div`
@@ -21,7 +23,8 @@ const MapMenuButtons = styled.div`
   align-items: center;
   padding: 0 15px;
   gap: 10px;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
 `;
 
 const MenuButtonGroup = styled.div`
@@ -64,7 +67,8 @@ const MapContent = styled.div`
 
 const ToggleButton = styled.button`
   position: absolute;
-  top: 60px;
+  top: 50%;
+  transform: translateY(-50%);
   background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid #ddd;
   color: #666;
@@ -82,12 +86,10 @@ const ToggleButton = styled.button`
 
 const LeftToggleButton = styled(ToggleButton)<{ leftVisible: boolean }>`
   left: 10px;
-  transition: left 0.3s ease;
 `;
 
 const RightToggleButton = styled(ToggleButton)<{ rightVisible: boolean }>`
   right: 10px;
-  transition: right 0.3s ease;
 `;
 
 const PlaceholderText = styled.div`
@@ -110,29 +112,18 @@ const MapArea: React.FC<MapAreaProps> = ({
 }) => {
   return (
     <MapContainer>
-      <LeftToggleButton 
-        leftVisible={leftSidebarVisible} 
-        onClick={onToggleLeft}
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-          <line x1="8" y1="2" x2="8" y2="18" stroke="currentColor" strokeWidth="1.5"/>
-          {leftSidebarVisible && <rect x="2" y="2" width="6" height="16" rx="2" fill="currentColor" opacity="0.3"/>}
-        </svg>
-      </LeftToggleButton>
-      
-      <RightToggleButton 
-        rightVisible={rightSidebarVisible} 
-        onClick={onToggleRight}
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-          <line x1="12" y1="2" x2="12" y2="18" stroke="currentColor" strokeWidth="1.5"/>
-          {rightSidebarVisible && <rect x="12" y="2" width="6" height="16" rx="2" fill="currentColor" opacity="0.3"/>}
-        </svg>
-      </RightToggleButton>
-      
       <MapMenuButtons>
+        <LeftToggleButton 
+          leftVisible={leftSidebarVisible} 
+          onClick={onToggleLeft}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            <line x1="8" y1="2" x2="8" y2="18" stroke="currentColor" strokeWidth="1.5"/>
+            {leftSidebarVisible && <rect x="2" y="2" width="6" height="16" rx="2" fill="currentColor" opacity="0.3"/>}
+          </svg>
+        </LeftToggleButton>
+        
         <MenuButtonGroup>
           <MenuButton className="active">Map</MenuButton>
           <MenuButton>3D</MenuButton>
@@ -143,13 +134,24 @@ const MapArea: React.FC<MapAreaProps> = ({
           <MenuButton>Zoom Out</MenuButton>
           <MenuButton>Reset</MenuButton>
         </MenuButtonGroup>
+        
+        <RightToggleButton 
+          rightVisible={rightSidebarVisible} 
+          onClick={onToggleRight}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            <line x1="12" y1="2" x2="12" y2="18" stroke="currentColor" strokeWidth="1.5"/>
+            {rightSidebarVisible && <rect x="12" y="2" width="6" height="16" rx="2" fill="currentColor" opacity="0.3"/>}
+          </svg>
+        </RightToggleButton>
       </MapMenuButtons>
       
       <MapContent>
         <PlaceholderText>
           <h2>Map Area</h2>
           <p>This is where the Kepler.gl map will be integrated.</p>
-          <p>Use the arrow buttons to toggle the left and right sidebars.</p>
+          <p>Use the sidebar toggle icons in the menu bar above to show/hide sidebars.</p>
           <p>Current state: Left {leftSidebarVisible ? 'visible' : 'hidden'}, Right {rightSidebarVisible ? 'visible' : 'hidden'}</p>
         </PlaceholderText>
       </MapContent>
