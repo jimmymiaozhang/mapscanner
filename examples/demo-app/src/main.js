@@ -22,7 +22,11 @@ const USE_NEW_MAIN_PAGE = true;
 
 const Root = () => {
   if (USE_NEW_MAIN_PAGE) {
-    return <MainPage />;
+    return (
+      <Provider store={store}>
+        <MainPage />
+      </Provider>
+    );
   }
   
   return (

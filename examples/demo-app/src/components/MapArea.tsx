@@ -3,6 +3,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import AppEmbedded from '../AppEmbedded';
 
 const MapContainer = styled.div`
   flex: 1;
@@ -60,9 +62,12 @@ const MapContent = styled.div`
   justify-content: center;
   color: #666;
   font-size: 18px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-align: center;
+  position: relative;
+  
+  /* Remove the gradient background when kepler.gl is loaded */
+  &.kepler-loaded {
+    background: none;
+  }
 `;
 
 const ToggleButton = styled.button`
@@ -95,6 +100,35 @@ const RightToggleButton = styled(ToggleButton)<{ rightVisible: boolean }>`
 const PlaceholderText = styled.div`
   max-width: 400px;
   line-height: 1.6;
+`;
+
+// CSS Isolation Container to prevent kepler.gl layout conflicts with our sidebars
+const KeplerIsolationContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  contain: layout style;
+  overflow: hidden;
+  position: relative;
+  
+  /* Isolate kepler.gl styles from affecting our custom layout */
+  /* Keep all kepler.gl functionality visible for now */
+  .kepler-gl {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+    /* Don't hide anything yet - we want full kepler.gl functionality visible */
+  }
+  
+  /* Ensure proper rendering */
+  .mapboxgl-map {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Prevent kepler.gl styles from leaking out to affect our sidebars */
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 interface MapAreaProps {
@@ -147,13 +181,16 @@ const MapArea: React.FC<MapAreaProps> = ({
         </RightToggleButton>
       </MapMenuButtons>
       
-      <MapContent>
-        <PlaceholderText>
-          <h2>Map Area</h2>
-          <p>This is where the Kepler.gl map will be integrated.</p>
-          <p>Use the sidebar toggle icons in the menu bar above to show/hide sidebars.</p>
-          <p>Current state: Left {leftSidebarVisible ? 'visible' : 'hidden'}, Right {rightSidebarVisible ? 'visible' : 'hidden'}</p>
-        </PlaceholderText>
+      <MapContent className="kepler-loaded">
+        <KeplerIsolationContainer>
+          <AutoSizer>
+            {({height, width}) => (
+              <div style={{width, height}}>
+                <AppEmbedded />
+              </div>
+            )}
+          </AutoSizer>
+        </KeplerIsolationContainer>
       </MapContent>
     </MapContainer>
   );
