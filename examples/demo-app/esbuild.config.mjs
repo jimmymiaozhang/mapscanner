@@ -5,12 +5,14 @@ import esbuild from 'esbuild';
 import {replace} from 'esbuild-plugin-replace';
 import {dotenvRun} from '@dotenv-run/esbuild';
 import { config as dotenvConfig } from 'dotenv';
-dotenvConfig();
+import {join} from 'node:path';
+
+// Load .env file from project root (two directories up from demo-app)
+dotenvConfig({ path: join(process.cwd(), '../../.env') });
 
 import process from 'node:process';
 import fs from 'node:fs';
 import {spawn} from 'node:child_process';
-import {join} from 'node:path';
 import {readFileSync} from 'node:fs';
 const KeplerPackage = JSON.parse(readFileSync('../../package.json', 'utf8'));
 

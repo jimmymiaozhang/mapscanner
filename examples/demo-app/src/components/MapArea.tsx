@@ -4,7 +4,22 @@
 import React from 'react';
 import styled from 'styled-components';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import AppEmbedded from '../AppEmbedded';
+import {connect} from 'react-redux';
+
+// Import KeplerGl and necessary dependencies
+const KeplerGl = require('@kepler.gl/components').injectComponents([
+  require('../factories/load-data-modal').replaceLoadDataModal(),
+  require('../factories/map-control').replaceMapControl(),
+  require('../factories/panel-header').replacePanelHeader()
+]);
+
+import {CLOUD_PROVIDERS_CONFIGURATION, DEFAULT_FEATURE_FLAGS} from '../constants/default-settings';
+import {messages} from '../constants/localization';
+import {CLOUD_PROVIDERS} from '../cloud-providers';
+import {onExportFileSuccess, onLoadCloudMapSuccess} from '../actions';
+
+// Import keplerGlGetState function
+const keplerGlGetState = state => state.demo.keplerGl;
 
 const MapContainer = styled.div`
   flex: 1;
@@ -106,7 +121,7 @@ const PlaceholderText = styled.div`
 const KeplerIsolationContainer = styled.div`
   width: 100%;
   height: 100%;
-  contain: layout style;
+  /* Remove 'contain: layout style' as it interferes with Mapbox canvas rendering */
   overflow: hidden;
   position: relative;
   
@@ -119,10 +134,49 @@ const KeplerIsolationContainer = styled.div`
     /* Don't hide anything yet - we want full kepler.gl functionality visible */
   }
   
-  /* Ensure proper rendering */
-  .mapboxgl-map {
+  /* Fix map control positioning - ensure they appear on the right side */
+  .map-control {
+    right: 10px !important;
+    left: auto !important;
+    position: absolute !important;
+    z-index: 100 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Ensure map legend panels position correctly */
+  .map-control-panel,
+  .map-legend-panel {
+    position: absolute !important;
+    right: 10px !important;
+    left: auto !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Fix any toolbar positioning */
+  .map-control-toolbar {
+    right: 10px !important;
+    left: auto !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Ensure all map control buttons and panels can receive clicks */
+  .map-control-button,
+  .map-control-panel,
+  .map-legend-panel,
+  .side-panel--container {
+    pointer-events: auto !important;
+  }
+  
+  /* Ensure Mapbox canvas can render properly */
+  .mapboxgl-map,
+  .maplibregl-map {
     width: 100% !important;
     height: 100% !important;
+  }
+  
+  /* Ensure canvas elements can render */
+  canvas {
+    display: block !important;
   }
   
   /* Prevent kepler.gl styles from leaking out to affect our sidebars */
@@ -186,7 +240,19 @@ const MapArea: React.FC<MapAreaProps> = ({
           <AutoSizer>
             {({height, width}) => (
               <div style={{width, height}}>
-                <AppEmbedded />
+                <KeplerGl
+                  mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
+                  id="map"
+                  getState={keplerGlGetState}
+                  width={width}
+                  height={height}
+                  sidePanelWidth={320}
+                  cloudProviders={CLOUD_PROVIDERS}
+                  localeMessages={messages}
+                  onExportToCloudSuccess={onExportFileSuccess}
+                  onLoadCloudMapSuccess={onLoadCloudMapSuccess}
+                  featureFlags={DEFAULT_FEATURE_FLAGS}
+                />
               </div>
             )}
           </AutoSizer>
@@ -196,4 +262,8 @@ const MapArea: React.FC<MapAreaProps> = ({
   );
 };
 
-export default MapArea; 
+// Connect to Redux to access kepler.gl state
+const mapStateToProps = state => state;
+const dispatchToProps = dispatch => ({dispatch});
+
+export default connect(mapStateToProps, dispatchToProps)(MapArea); 
