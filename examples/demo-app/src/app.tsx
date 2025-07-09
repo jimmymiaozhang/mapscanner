@@ -693,20 +693,20 @@ const App = props => {
                       <AutoSizer>
                         {({height, width}) => (
                           <StyledKeplerContainer>
-                            <KeplerGl
-                              mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
-                              id="map"
-                              getState={keplerGlGetState}
-                              width={width}
-                              height={height}
+                          <KeplerGl
+                            mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
+                            id="map"
+                            getState={keplerGlGetState}
+                            width={width}
+                            height={height}
                               sidePanelWidth={320} // Set fixed sidebar width
-                              cloudProviders={CLOUD_PROVIDERS}
-                              localeMessages={messages}
-                              onExportToCloudSuccess={onExportFileSuccess}
-                              onLoadCloudMapSuccess={onLoadCloudMapSuccess}
-                              featureFlags={DEFAULT_FEATURE_FLAGS}
-                              onViewStateChange={onViewStateChange}
-                            />
+                            cloudProviders={CLOUD_PROVIDERS}
+                            localeMessages={messages}
+                            onExportToCloudSuccess={onExportFileSuccess}
+                            onLoadCloudMapSuccess={onLoadCloudMapSuccess}
+                            featureFlags={DEFAULT_FEATURE_FLAGS}
+                            onViewStateChange={onViewStateChange}
+                          />
                           </StyledKeplerContainer>
                         )}
                       </AutoSizer>
