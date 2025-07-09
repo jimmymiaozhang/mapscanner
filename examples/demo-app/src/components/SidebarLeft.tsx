@@ -6,7 +6,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import styled from 'styled-components';
 import {wrapTo, setBackgroundColor} from '@kepler.gl/actions';
 import {RGBColor} from '@kepler.gl/types';
-import CustomMapStyleSelector from './CustomMapStyleSelector';
+import { MapStyleSelector } from './map-style-selector';
 
 interface SidebarContainerProps {
   $isVisible: boolean;
@@ -116,7 +116,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
       case 'styles':
         return (
           <TabContent $isVisible={true}>
-            <CustomMapStyleSelector 
+            <MapStyleSelector 
               keplerGlId={keplerGlId}
               backgroundColor={backgroundColor}
               onBackgroundColorChange={handleBackgroundColorChange}
