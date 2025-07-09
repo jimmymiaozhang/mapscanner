@@ -104,11 +104,15 @@ const ToggleButton = styled.button`
   }
 `;
 
-const LeftToggleButton = styled(ToggleButton)<{ leftVisible: boolean }>`
+const LeftToggleButton = styled(ToggleButton).withConfig({
+  shouldForwardProp: (prop) => prop !== '$leftVisible'
+})<{ $leftVisible: boolean }>`
   left: 10px;
 `;
 
-const RightToggleButton = styled(ToggleButton)<{ rightVisible: boolean }>`
+const RightToggleButton = styled(ToggleButton).withConfig({
+  shouldForwardProp: (prop) => prop !== '$rightVisible'
+})<{ $rightVisible: boolean }>`
   right: 10px;
 `;
 
@@ -202,7 +206,7 @@ const MapArea: React.FC<MapAreaProps> = ({
     <MapContainer>
       <MapMenuButtons>
         <LeftToggleButton 
-          leftVisible={leftSidebarVisible} 
+          $leftVisible={leftSidebarVisible} 
           onClick={onToggleLeft}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -224,7 +228,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         </MenuButtonGroup>
         
         <RightToggleButton 
-          rightVisible={rightSidebarVisible} 
+          $rightVisible={rightSidebarVisible} 
           onClick={onToggleRight}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

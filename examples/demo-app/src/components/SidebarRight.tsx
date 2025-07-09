@@ -8,7 +8,9 @@ interface SidebarContainerProps {
   isVisible: boolean;
 }
 
-const SidebarContainer = styled.div<SidebarContainerProps>`
+const SidebarContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isVisible'
+})<SidebarContainerProps>`
   width: ${props => props.isVisible ? '320px' : '0px'};
   min-width: ${props => props.isVisible ? '320px' : '0px'};
   background-color: #ffffff;
