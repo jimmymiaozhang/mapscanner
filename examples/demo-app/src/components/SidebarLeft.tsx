@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import {wrapTo, setBackgroundColor} from '@kepler.gl/actions';
 import {RGBColor} from '@kepler.gl/types';
 import { MapStyleSelector } from './map-style-selector';
+import { FilterManager } from './filter-manager';
 
 interface SidebarContainerProps {
   $isVisible: boolean;
@@ -70,9 +71,11 @@ const MenuButton = styled.button.withConfig({
   `}
 `;
 
-const ContentArea = styled.div`
+const ContentArea = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== '$isFiltersTab'
+})<{$isFiltersTab?: boolean}>`
   flex: 1;
-  padding: 20px;
+  padding: ${props => props.$isFiltersTab ? '0' : '20px'};
   overflow-y: auto;
 `;
 
@@ -135,10 +138,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
       case 'filters':
         return (
           <TabContent $isVisible={true}>
-            <h3>Filters</h3>
-            <PlaceholderContent>
-              Data filtering options will be available here.
-            </PlaceholderContent>
+            <FilterManager keplerGlId={keplerGlId} />
           </TabContent>
         );
       case 'data':
@@ -184,7 +184,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
             Data
           </MenuButton>
         </MenuButtons>
-        <ContentArea>
+        <ContentArea $isFiltersTab={activeTab === 'filters'}>
           {renderTabContent()}
         </ContentArea>
       </div>
