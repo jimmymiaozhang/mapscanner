@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
+// Import custom CSS overrides for light theme filter selectors
+import './kepler-light-theme-overrides.css';
+
+// Import runtime JavaScript to handle dynamically generated styled-components
+import './kepler-light-theme-runtime.js';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import document from 'global/document';

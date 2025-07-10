@@ -37,10 +37,10 @@ const PanelViewListToggleWrapper = styled.div.attrs({
 export const StyledToggleOption = styled.div.attrs({
   className: 'layer-panel-toggle-option'
 })<{$active: boolean}>`
-  color: ${props => (props.$active ? props.theme.subtextColorActive : props.theme.panelTabColor)};
+  color: ${props => (props.$active ? props.theme.textColorLT : props.theme.subtextColorLT)};
   &:hover {
     cursor: pointer;
-    color: ${props => props.theme.subtextColorActive};
+    color: ${props => props.theme.textColorLT};
   }
 `;
 
@@ -55,7 +55,7 @@ function ToggleOptionFactory() {
       <option.iconComponent height="20px" />
       <Tooltip id={`${option.id}-toggle-option`} effect="solid" delayShow={500} place="bottom">
         <span>
-          <FormattedMessage id={option.label} />
+          {option.label}
         </span>
       </Tooltip>
     </StyledToggleOption>
@@ -68,12 +68,12 @@ const TOGGLE_OPTIONS = [
   {
     id: PANEL_VIEW_TOGGLES.list,
     iconComponent: OrderByList,
-    label: 'sidebar.panelViewToggle.list'
+    label: 'View List'
   },
   {
     id: PANEL_VIEW_TOGGLES.byDataset,
     iconComponent: OrderByDataset,
-    label: 'sidebar.panelViewToggle.byDataset'
+    label: 'View by Dataset'
   }
 ];
 

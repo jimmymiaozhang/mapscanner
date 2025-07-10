@@ -1,0 +1,124 @@
+/* 
+ * Kepler.gl Light Theme Overrides for Filter Selectors
+ * This CSS file overrides dark filter selector styling to match light sidebar theme
+ * without modifying any original kepler.gl files
+ */
+
+/* Filter panel content background */
+.filter-panel__content {
+  background-color: #ffffff !important;
+}
+
+/* Source selector container (the main container) */
+.kepler-gl .filter-panel .source-selector,
+.kepler-gl [class*="StyledSourceContainer"] {
+  background-color: #ffffff !important;
+}
+
+/* Item selector dropdown styling */
+.kepler-gl .item-selector__dropdown {
+  background-color: #f7f7f7 !important;
+  border-color: #d3d8e0 !important;
+  color: #545454 !important;
+}
+
+.kepler-gl .item-selector__dropdown:hover {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.kepler-gl .item-selector__dropdown:focus,
+.kepler-gl .item-selector__dropdown:active,
+.kepler-gl .item-selector__dropdown.focus,
+.kepler-gl .item-selector__dropdown.active {
+  background-color: #f7f7f7 !important;
+  border-color: #000000 !important;
+}
+
+/* Dropdown list background */
+.kepler-gl .list {
+  background-color: #ffffff !important;
+  border-top: 1px solid #d3d8e0 !important;
+}
+
+/* Dropdown list items */
+.kepler-gl .list__item {
+  color: #545454 !important;
+}
+
+.kepler-gl .list__item:hover,
+.kepler-gl .list__item.hover {
+  background-color: #f0f0f0 !important;
+}
+
+.kepler-gl .list__item.selected {
+  background-color: #f0f0f0 !important;
+}
+
+/* Dropdown list anchors (text) */
+.kepler-gl .list__item__anchor {
+  color: #545454 !important;
+}
+
+.kepler-gl .list__item:hover .list__item__anchor,
+.kepler-gl .list__item.hover .list__item__anchor {
+  color: #2473bd !important;
+}
+
+/* Field selector specific styling */
+.kepler-gl .field-selector .item-selector__dropdown {
+  background-color: #f7f7f7 !important;
+  color: #545454 !important;
+}
+
+/* Placeholder text styling */
+.kepler-gl .item-selector__dropdown__value {
+  color: #545454 !important;
+}
+
+/* Input placeholder styling for filter selectors */
+.kepler-gl .filter-panel input::placeholder,
+.kepler-gl .filter-panel .item-selector__dropdown__placeholder {
+  color: #999999 !important;
+}
+
+/* Side panel sections within filter panels */
+.kepler-gl .filter-panel .side-panel-section {
+  background-color: transparent !important;
+}
+
+/* Ensure any secondary input styling is light */
+.kepler-gl .filter-panel [data-theme="secondary"] {
+  background-color: #f7f7f7 !important;
+  color: #545454 !important;
+  border-color: transparent !important;
+}
+
+.kepler-gl .filter-panel [data-theme="secondary"]:hover {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.kepler-gl .filter-panel [data-theme="secondary"]:focus,
+.kepler-gl .filter-panel [data-theme="secondary"]:active {
+  background-color: #f7f7f7 !important;
+  border-color: #000000 !important;
+}
+
+/* Override any remaining dark backgrounds in filter area */
+.kepler-gl .filter-panel * {
+  /* Only apply to elements that don't already have a light background */
+}
+
+/* Specifically target the StyledFilterContent component */
+.kepler-gl [class*="StyledFilterContent"] {
+  background-color: #ffffff !important;
+}
+
+/* Target any styled components with dark backgrounds in filter panels */
+.kepler-gl .filter-panel [style*="background-color: #242730"],
+.kepler-gl .filter-panel [style*="background-color: #29323c"],
+.kepler-gl .filter-panel [style*="background-color: #292e36"],
+.kepler-gl .filter-panel [style*="background-color: #1c2233"] {
+  background-color: #ffffff !important;
+} 

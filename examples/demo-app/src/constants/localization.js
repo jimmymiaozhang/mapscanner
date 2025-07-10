@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
-// Add english messages here, other languages will use these
+// Import the complete kepler.gl localization messages
+import {messages as keplerMessages} from '@kepler.gl/localization';
+
+// Add demo-specific english messages here, other languages will use these
 // if translations not available for every message
-const en = {
+const demoMessagesEn = {
   'modal.loadData.remote': 'Load Map using URL',
   'sampleMapsTab.noData': 'No data ?',
   'sampleMapsTab.trySampleData': 'Try sample data',
@@ -20,9 +23,16 @@ const en = {
   'tooltip.showSQLPanel': 'Show SQL Panel'
 };
 
+// Merge kepler.gl core messages with demo-specific messages
+const en = {
+  ...keplerMessages.en,
+  ...demoMessagesEn
+};
+
 export const messages = {
   en,
   fi: {
+    ...keplerMessages.fi,
     'modal.loadData.remote': 'Lataa kartta URL-osoitteen avulla',
     'sampleMapsTab.noData': 'Ei aineistoja?',
     'sampleMapsTab.trySampleData': 'Kokeile testiaineistoja',
@@ -37,6 +47,7 @@ export const messages = {
     'loadRemoteMap.fetch': 'Nouda'
   },
   ca: {
+    ...keplerMessages.ca,
     'modal.loadData.remote': 'Carrega mapa mitjançant URL',
     'sampleMapsTab.noData': 'Cap dada?',
     'sampleMapsTab.trySampleData': 'Prova dades de mostra',
@@ -51,6 +62,7 @@ export const messages = {
     'loadRemoteMap.fetch': 'Cerca'
   },
   es: {
+    ...keplerMessages.es,
     'modal.loadData.remote': 'Cargar mapa usando URL',
     'sampleMapsTab.noData': 'Ningún dato?',
     'sampleMapsTab.trySampleData': 'Prueba datos de muestra',
@@ -65,6 +77,7 @@ export const messages = {
     'loadRemoteMap.fetch': 'Busca'
   },
   cn: {
+    ...keplerMessages.cn,
     'modal.loadData.remote': '使用 URL 加载地图',
     'sampleMapsTab.noData': '没有数据？',
     'sampleMapsTab.trySampleData': '尝试样本数据',

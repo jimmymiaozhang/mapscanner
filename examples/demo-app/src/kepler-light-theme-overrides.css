@@ -1,0 +1,152 @@
+/* 
+ * Kepler.gl Light Theme Overrides for Filter Selectors
+ * This CSS file overrides dark filter selector styling to match light sidebar theme
+ * without modifying any original kepler.gl files
+ */
+
+/* === PRIMARY OVERRIDES - Target the exact dark background === */
+
+/* Target the StyledSourceContainer with hardcoded #1c2233 background */
+.kepler-gl [class*="StyledSourceContainer"] {
+  background-color: #ffffff !important;
+}
+
+/* Target any element with the exact dark background colors */
+.kepler-gl [style*="background-color: rgb(28, 34, 51)"],
+.kepler-gl [style*="background-color: #1c2233"],
+.kepler-gl [style*="background-color: rgb(36, 39, 48)"], 
+.kepler-gl [style*="background-color: #242730"],
+.kepler-gl [style*="background-color: rgb(41, 50, 60)"],
+.kepler-gl [style*="background-color: #29323c"],
+.kepler-gl [style*="background-color: rgb(41, 46, 54)"],
+.kepler-gl [style*="background-color: #292e36"] {
+  background-color: #ffffff !important;
+}
+
+/* === FILTER PANEL SPECIFIC OVERRIDES === */
+
+/* Filter panel content background */
+.filter-panel__content {
+  background-color: #ffffff !important;
+}
+
+/* Source selector container - multiple targeting approaches */
+.kepler-gl .filter-panel .source-selector,
+.kepler-gl .filter-panel > div > div:first-child,
+.kepler-gl .new-filter-panel > div:first-child {
+  background-color: #ffffff !important;
+}
+
+/* === ITEM SELECTOR DROPDOWN OVERRIDES === */
+
+/* Item selector dropdown styling */
+.kepler-gl .item-selector__dropdown {
+  background-color: #f7f7f7 !important;
+  border: 1px solid #d3d8e0 !important;
+  color: #545454 !important;
+}
+
+.kepler-gl .item-selector__dropdown:hover {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.kepler-gl .item-selector__dropdown:focus,
+.kepler-gl .item-selector__dropdown:active,
+.kepler-gl .item-selector__dropdown.focus,
+.kepler-gl .item-selector__dropdown.active {
+  background-color: #f7f7f7 !important;
+  border-color: #000000 !important;
+}
+
+/* === DROPDOWN LIST OVERRIDES === */
+
+/* Dropdown list background */
+.kepler-gl .list-selector {
+  background-color: #ffffff !important;
+  border-top: 1px solid #d3d8e0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Dropdown list items */
+.kepler-gl .list__item {
+  color: #545454 !important;
+  background-color: transparent !important;
+}
+
+.kepler-gl .list__item:hover,
+.kepler-gl .list__item.hover {
+  background-color: #f0f0f0 !important;
+}
+
+.kepler-gl .list__item.selected {
+  background-color: #e8e8e8 !important;
+}
+
+/* Dropdown list anchors (text) */
+.kepler-gl .list__item__anchor {
+  color: #545454 !important;
+}
+
+.kepler-gl .list__item:hover .list__item__anchor,
+.kepler-gl .list__item.hover .list__item__anchor {
+  color: #333333 !important;
+}
+
+/* === TYPEAHEAD AND INPUT OVERRIDES === */
+
+/* Typeahead wrapper */
+.kepler-gl [class*="TypeaheadWrapper"] {
+  background-color: #ffffff !important;
+}
+
+/* Typeahead input */
+.kepler-gl .typeahead__input_box input {
+  background-color: #ffffff !important;
+  border: 1px solid #d3d8e0 !important;
+  color: #545454 !important;
+}
+
+/* Chickleted input container */
+.kepler-gl .chickleted-input {
+  background-color: #f7f7f7 !important;
+  border: 1px solid #d3d8e0 !important;
+}
+
+/* === TEXT AND PLACEHOLDER OVERRIDES === */
+
+/* Placeholder text styling */
+.kepler-gl .item-selector__dropdown__value {
+  color: #545454 !important;
+}
+
+/* Input placeholder styling */
+.kepler-gl .filter-panel input::placeholder,
+.kepler-gl .filter-panel .item-selector__dropdown__placeholder {
+  color: #999999 !important;
+}
+
+/* === BROAD OVERRIDE RULES === */
+
+/* Ensure any secondary input styling is light */
+.kepler-gl .filter-panel [data-theme="secondary"] {
+  background-color: #f7f7f7 !important;
+  color: #545454 !important;
+  border-color: transparent !important;
+}
+
+.kepler-gl .filter-panel [data-theme="secondary"]:hover {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+/* Side panel sections within filter panels */
+.kepler-gl .filter-panel .side-panel-section {
+  background-color: transparent !important;
+}
+
+/* Broad override for any remaining styled components */
+.kepler-gl .filter-panel [class*="styled__"],
+.kepler-gl .filter-panel [class*="Styled"] {
+  background-color: #ffffff !important;
+} 

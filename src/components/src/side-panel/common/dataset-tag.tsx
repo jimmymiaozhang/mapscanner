@@ -15,8 +15,8 @@ function nop() {
 
 const DatasetTagWrapper = styled.div`
   display: flex;
-  color: ${props => props.theme.textColor};
-  font-size: 11px;
+  color: #545454; /* Dark gray for default state */
+  font-size: 14px; /* Increased font size */
   letter-spacing: 0.2px;
   overflow: auto;
   display: flex;
@@ -29,6 +29,11 @@ const DatasetTagWrapper = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #a0a0a0; /* Light gray on hover */
+    }
   }
 `;
 

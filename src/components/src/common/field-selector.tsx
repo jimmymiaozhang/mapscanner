@@ -114,7 +114,7 @@ function FieldSelectorFactory(
       multiSelect: false,
       closeOnSelect: true,
       showToken: true,
-      placeholder: 'placeholder.selectField',
+      placeholder: 'Select a Field',
       className: ''
     };
 

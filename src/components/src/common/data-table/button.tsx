@@ -19,6 +19,11 @@ const StyledButton = styled.button`
   &:hover {
     opacity: 0.8;
   }
+
+  /* Ensure sort icons are always visible with a darker color */
+  &.col-name__sort {
+    color: ${props => props.theme.subtextColor};
+  }
 `;
 
 type ButtonProps = {

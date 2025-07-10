@@ -155,9 +155,10 @@ export const SidePanelSection = styled.div.attrs(props => ({
 export const SidePanelDivider = styled.div.attrs({
   className: 'side-panel-divider'
 })`
-  border-bottom: ${props => props.theme.sidepanelDividerBorder} solid
-    ${props => props.theme.panelBorderColor};
+  border-bottom: ${props => props.theme.sidepanelDividerBorder} solid #E1E1E1;
   margin-bottom: ${props => props.theme.sidepanelDividerMargin}px;
+  margin-left: ${props => props.theme.sidePanelInnerPadding}px;
+  margin-right: ${props => props.theme.sidePanelInnerPadding}px;
   height: ${props => props.theme.sidepanelDividerHeight}px;
 `;
 
