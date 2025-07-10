@@ -67,7 +67,7 @@ export interface BackgroundLayerItemProps {
   getLayerDisplayName: (slug: string) => string;
   visibleLayerGroups: any;
   topLayerGroups: any;
-}
+} 
 
 export interface ColorPickerProps {
   slug: string;
