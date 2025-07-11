@@ -248,6 +248,40 @@ const CustomLayerWrapper = styled.div`
       color: #007bff !important;
     }
   }
+  
+  /* HIDE DATASET SECTION AND UNNECESSARY UI ELEMENTS */
+  
+  /* Hide dataset section by class name */
+  div[class*="StyledDatasetSection"] {
+    display: none !important;
+  }
+  
+  /* Hide add-data-button specifically */
+  button.add-data-button {
+    display: none !important;
+  }
+  
+  /* Hide elements containing ONLY dataset content */
+  .layer-manager > div:has(span:contains("Datasets")):not(:has(span:contains("Layers"))) {
+    display: none !important;
+  }
+  
+  /* Hide PanelViewListToggle (View List/View by Dataset icons) */
+  [class*="PanelViewListToggle"],
+  [class*="panel-view-list-toggle"] {
+    display: none !important;
+  }
+  
+  /* Hide the first SidePanelSection (usually contains toggle) */
+  .layer-manager > .side-panel-section:first-child:not(:has(span:contains("Layers"))) {
+    display: none !important;
+  }
+  
+  /* Hide SidePanelDivider (dividing line) */
+  .layer-manager > .side-panel-divider:first-of-type,
+  .layer-manager > [class*="SidePanelDivider"]:first-of-type {
+    display: none !important;
+  }
 `;
 
 interface CustomLayerManagerProps {
@@ -263,8 +297,8 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
   const layers = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layers || []);
   const layerOrder = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerOrder || []);
   const layerClasses = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerClasses || {});
-  const layerBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerBlending || 'normal') as any;
-  const overlayBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.overlayBlending || 'normal') as any;
+  const layerBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerBlending || 'normal') as 'normal' | 'additive' | 'subtractive';
+  const overlayBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.overlayBlending || 'normal') as 'normal' | 'screen' | 'darken';
   const panelListView = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.uiState?.layerPanelListView || 'list');
 
   // Function to replace button text and panel titles
@@ -389,6 +423,233 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
     return () => clearInterval(interval);
   }, [replaceButtonText]);
 
+  // Hide dataset section since it's redundant with Data tab
+  useEffect(() => {
+    const hideDatasetSection = () => {
+      if (!wrapperRef.current) return;
+
+      // Strategy 1: Target the DatasetSection component specifically
+      // Look for elements that contain "Datasets" text AND "Add Data" button together
+      const allElements = wrapperRef.current.querySelectorAll('*');
+      
+      allElements.forEach(element => {
+        const elementText = element.textContent || '';
+        
+        // Check if this element contains both "Datasets" and "Add Data" (the dataset section)
+        if (elementText.includes('Datasets') && elementText.includes('Add Data') && 
+            !elementText.includes('Layers') && !elementText.includes('Add Layer')) {
+          
+          // This should be the DatasetSection - hide it
+          (element as HTMLElement).style.display = 'none';
+          
+          // Also hide the divider that comes after it
+          const nextSibling = element.nextElementSibling;
+          if (nextSibling && nextSibling.className?.includes('Divider')) {
+            (nextSibling as HTMLElement).style.display = 'none';
+          }
+        }
+      });
+
+      // Strategy 2: Target by CSS class names (if available)
+      const styledDatasetSections = wrapperRef.current.querySelectorAll('[class*="StyledDatasetSection"]');
+      styledDatasetSections.forEach(section => {
+        (section as HTMLElement).style.display = 'none';
+      });
+
+      // Strategy 3: Target by finding the Add Data button and hiding its container
+      const addDataButtons = wrapperRef.current.querySelectorAll('button.add-data-button, button[class*="add-data"]');
+      addDataButtons.forEach(button => {
+        // Walk up the DOM to find the section container
+        let current = button.parentElement;
+        while (current && current !== wrapperRef.current) {
+          const currentText = current.textContent || '';
+          // If we find a container with "Datasets" and "Add Data" but no "Layers"
+          if (currentText.includes('Datasets') && currentText.includes('Add Data') && 
+              !currentText.includes('Layers') && !currentText.includes('Add Layer')) {
+            (current as HTMLElement).style.display = 'none';
+            break;
+          }
+          current = current.parentElement;
+        }
+      });
+
+      // Strategy 4: Hide by structure - the DatasetSection should be the first major section 
+      // that contains dataset content
+      const layerManagerChildren = Array.from(wrapperRef.current.children);
+      
+      for (const child of layerManagerChildren) {
+        const childText = child.textContent || '';
+        
+        if (childText.includes('Datasets') && childText.includes('Add Data') && 
+            !childText.includes('Layers') && !childText.includes('Add Layer')) {
+          (child as HTMLElement).style.display = 'none';
+          break; // Only hide the first match to avoid hiding layer content
+        }
+      }
+
+      // Strategy 5: Hide the PanelViewListToggle (View List/View by Dataset icons)
+      const panelViewToggles = wrapperRef.current.querySelectorAll('[class*="PanelViewListToggle"], [class*="panel-view-list-toggle"]');
+      panelViewToggles.forEach(toggle => {
+        // Hide the toggle and its parent section
+        const parentSection = toggle.closest('.side-panel-section') || toggle.closest('[class*="SidePanelSection"]');
+        if (parentSection) {
+          (parentSection as HTMLElement).style.display = 'none';
+        } else {
+          (toggle as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // Strategy 6: Hide the first SidePanelSection (usually contains PanelViewListToggle)
+      const firstSidePanelSection = wrapperRef.current.querySelector('.side-panel-section');
+      if (firstSidePanelSection) {
+        const sectionText = firstSidePanelSection.textContent || '';
+        // If it doesn't contain layer content, hide it (it's likely the toggle section)
+        if (!sectionText.includes('Layers') && !sectionText.includes('Add Layer')) {
+          (firstSidePanelSection as HTMLElement).style.display = 'none';
+        }
+      }
+
+      // Strategy 7: Hide SidePanelDivider (the dividing line)
+      const sidePanelDividers = wrapperRef.current.querySelectorAll('.side-panel-divider, [class*="SidePanelDivider"]');
+      if (sidePanelDividers.length > 0) {
+        // Hide the first divider (usually after dataset section)
+        if (sidePanelDividers[0]) {
+          (sidePanelDividers[0] as HTMLElement).style.display = 'none';
+        }
+      }
+
+      // Strategy 8: More specific - find divider that follows a hidden dataset section
+      const allChildren = Array.from(wrapperRef.current.children);
+      for (let i = 0; i < allChildren.length - 1; i++) {
+        const currentElement = allChildren[i];
+        const nextElement = allChildren[i + 1];
+        
+        // If current element is hidden (dataset section) and next is a divider, hide the divider
+        const currentIsHidden = (currentElement as HTMLElement).style.display === 'none';
+        const nextIsDivider = nextElement.classList.contains('side-panel-divider') || 
+                              nextElement.className.includes('SidePanelDivider');
+        
+        if (currentIsHidden && nextIsDivider) {
+          (nextElement as HTMLElement).style.display = 'none';
+        }
+      }
+    };
+
+    // Run multiple times to catch dynamically loaded content
+    const timeouts = [0, 100, 300, 500, 1000].map(delay => 
+      setTimeout(hideDatasetSection, delay)
+    );
+
+    // Also run periodically but less frequently
+    const interval = setInterval(hideDatasetSection, 2000);
+
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+      clearInterval(interval);
+    };
+  }, [datasets, layers]);
+
+  // Set up MutationObserver for real-time hiding
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+
+    const hideDatasetSection = () => {
+      if (!wrapperRef.current) return;
+
+      // Use the same precise targeting as the main effect
+      const allElements = wrapperRef.current.querySelectorAll('*');
+      
+      allElements.forEach(element => {
+        const elementText = element.textContent || '';
+        
+        // Target elements that contain both "Datasets" and "Add Data" but no layer content
+        if (elementText.includes('Datasets') && elementText.includes('Add Data') && 
+            !elementText.includes('Layers') && !elementText.includes('Add Layer')) {
+          (element as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // Also target by CSS class names
+      const styledDatasetSections = wrapperRef.current.querySelectorAll('[class*="StyledDatasetSection"]');
+      styledDatasetSections.forEach(section => {
+        (section as HTMLElement).style.display = 'none';
+      });
+
+      // Target specific add-data-button class
+      const addDataButtons = wrapperRef.current.querySelectorAll('button.add-data-button, button[class*="add-data"]');
+      addDataButtons.forEach(button => {
+        let current = button.parentElement;
+        while (current && current !== wrapperRef.current) {
+          const currentText = current.textContent || '';
+          if (currentText.includes('Datasets') && currentText.includes('Add Data') && 
+              !currentText.includes('Layers') && !currentText.includes('Add Layer')) {
+            (current as HTMLElement).style.display = 'none';
+            break;
+          }
+          current = current.parentElement;
+        }
+      });
+
+      // Also hide PanelViewListToggle and SidePanelDivider
+      const panelViewToggles = wrapperRef.current.querySelectorAll('[class*="PanelViewListToggle"], [class*="panel-view-list-toggle"]');
+      panelViewToggles.forEach(toggle => {
+        const parentSection = toggle.closest('.side-panel-section') || toggle.closest('[class*="SidePanelSection"]');
+        if (parentSection) {
+          (parentSection as HTMLElement).style.display = 'none';
+        } else {
+          (toggle as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // Hide first side panel section if it doesn't contain layer content
+      const firstSidePanelSection = wrapperRef.current.querySelector('.side-panel-section');
+      if (firstSidePanelSection) {
+        const sectionText = firstSidePanelSection.textContent || '';
+        if (!sectionText.includes('Layers') && !sectionText.includes('Add Layer')) {
+          (firstSidePanelSection as HTMLElement).style.display = 'none';
+        }
+      }
+
+      // Hide SidePanelDivider
+      const sidePanelDividers = wrapperRef.current.querySelectorAll('.side-panel-divider, [class*="SidePanelDivider"]');
+      if (sidePanelDividers[0]) {
+        (sidePanelDividers[0] as HTMLElement).style.display = 'none';
+      }
+
+      // More specific divider hiding - find divider that follows hidden elements
+      const allChildren = Array.from(wrapperRef.current.children);
+      for (let i = 0; i < allChildren.length - 1; i++) {
+        const currentElement = allChildren[i];
+        const nextElement = allChildren[i + 1];
+        
+        const currentIsHidden = (currentElement as HTMLElement).style.display === 'none';
+        const nextIsDivider = nextElement.classList.contains('side-panel-divider') || 
+                              nextElement.className.includes('SidePanelDivider');
+        
+        if (currentIsHidden && nextIsDivider) {
+          (nextElement as HTMLElement).style.display = 'none';
+        }
+      }
+    };
+
+    const observer = new MutationObserver(() => {
+      setTimeout(hideDatasetSection, 50);
+    });
+
+    observer.observe(wrapperRef.current, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+
+    // Run immediately
+    hideDatasetSection();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Action handlers for dataset operations
   const showDatasetTable = useCallback(
     (dataId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.showDatasetTable(dataId))),
@@ -478,12 +739,12 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
   );
 
   const updateLayerBlending = useCallback(
-    (mode: string) => dispatch(wrapTo(keplerGlId, VisStateActions.updateLayerBlending(mode))),
+    (mode: 'normal' | 'additive' | 'subtractive') => dispatch(wrapTo(keplerGlId, VisStateActions.updateLayerBlending(mode))),
     [dispatch, keplerGlId]
   );
 
   const updateOverlayBlending = useCallback(
-    (mode: string) => dispatch(wrapTo(keplerGlId, VisStateActions.updateOverlayBlending(mode))),
+    (mode: 'normal' | 'screen' | 'darken') => dispatch(wrapTo(keplerGlId, VisStateActions.updateOverlayBlending(mode))),
     [dispatch, keplerGlId]
   );
 
