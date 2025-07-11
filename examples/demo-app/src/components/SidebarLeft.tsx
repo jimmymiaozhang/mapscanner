@@ -98,7 +98,7 @@ interface SidebarLeftProps {
 }
 
 // Define the available tabs
-type TabType = 'styles' | 'layers' | 'filters' | 'data';
+type TabType = 'styles' | 'layers' | 'filters';
 
 const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGlId = 'map' }) => {
   const dispatch = useDispatch();
@@ -141,15 +141,6 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
             <FilterManager keplerGlId={keplerGlId} />
           </TabContent>
         );
-      case 'data':
-        return (
-          <TabContent $isVisible={true}>
-            <h3>Data</h3>
-            <PlaceholderContent>
-              Data import and management features will be located here.
-            </PlaceholderContent>
-          </TabContent>
-        );
       default:
         return null;
     }
@@ -160,10 +151,10 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
       <div className="sidebar-content">
         <MenuButtons>
           <MenuButton 
-            $isActive={activeTab === 'styles'}
-            onClick={() => setActiveTab('styles')}
+            $isActive={activeTab === 'filters'}
+            onClick={() => setActiveTab('filters')}
           >
-            Styles
+            Data
           </MenuButton>
           <MenuButton 
             $isActive={activeTab === 'layers'}
@@ -172,16 +163,10 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
             Layers
           </MenuButton>
           <MenuButton 
-            $isActive={activeTab === 'filters'}
-            onClick={() => setActiveTab('filters')}
+            $isActive={activeTab === 'styles'}
+            onClick={() => setActiveTab('styles')}
           >
-            Filters
-          </MenuButton>
-          <MenuButton 
-            $isActive={activeTab === 'data'}
-            onClick={() => setActiveTab('data')}
-          >
-            Data
+            Styles
           </MenuButton>
         </MenuButtons>
         <ContentArea $isFiltersTab={activeTab === 'filters'}>
