@@ -8,6 +8,7 @@ import {wrapTo, setBackgroundColor} from '@kepler.gl/actions';
 import {RGBColor} from '@kepler.gl/types';
 import { MapStyleSelector } from './map-style-selector';
 import { FilterManager } from './filter-manager';
+import { LayerManager } from './layer-manager';
 
 interface SidebarContainerProps {
   $isVisible: boolean;
@@ -72,10 +73,10 @@ const MenuButton = styled.button.withConfig({
 `;
 
 const ContentArea = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== '$isFiltersTab'
-})<{$isFiltersTab?: boolean}>`
+  shouldForwardProp: (prop) => prop !== '$isFiltersTab' && prop !== '$isLayersTab'
+})<{$isFiltersTab?: boolean; $isLayersTab?: boolean}>`
   flex: 1;
-  padding: ${props => props.$isFiltersTab ? '0' : '20px'};
+  padding: ${props => (props.$isFiltersTab || props.$isLayersTab) ? '0' : '20px'};
   overflow-y: auto;
 `;
 
@@ -102,7 +103,7 @@ type TabType = 'styles' | 'layers' | 'filters';
 
 const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGlId = 'map' }) => {
   const dispatch = useDispatch();
-  const [activeTab, setActiveTab] = useState<TabType>('styles');
+  const [activeTab, setActiveTab] = useState<TabType>('filters');
 
   // Get backgroundColor from kepler.gl state
   const backgroundColor = useSelector((state: any) => 
@@ -129,10 +130,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
       case 'layers':
         return (
           <TabContent $isVisible={true}>
-            <h3>Layers</h3>
-            <PlaceholderContent>
-              Layer controls and management will be implemented here.
-            </PlaceholderContent>
+            <LayerManager keplerGlId={keplerGlId} />
           </TabContent>
         );
       case 'filters':
@@ -169,7 +167,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
             Styles
           </MenuButton>
         </MenuButtons>
-        <ContentArea $isFiltersTab={activeTab === 'filters'}>
+        <ContentArea $isFiltersTab={activeTab === 'filters'} $isLayersTab={activeTab === 'layers'}>
           {renderTabContent()}
         </ContentArea>
       </div>

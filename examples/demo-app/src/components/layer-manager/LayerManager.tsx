@@ -3,23 +3,23 @@
 
 import React, {useCallback, useMemo, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {wrapTo, UIStateActions, VisStateActions} from '@kepler.gl/actions';
+import {wrapTo, UIStateActions, VisStateActions, MapStateActions} from '@kepler.gl/actions';
 import styled from 'styled-components';
 
-// Import the kepler.gl injector and FilterManagerFactory
-import {appInjector, FilterManagerFactory} from '@kepler.gl/components';
+// Import the kepler.gl injector and LayerManagerFactory
+import {appInjector, LayerManagerFactory} from '@kepler.gl/components';
 
-// Get the FilterManager component using the injector
-const FilterManager = appInjector.get(FilterManagerFactory);
+// Get the LayerManager component using the injector
+const LayerManager = appInjector.get(LayerManagerFactory);
 
 // Styled wrapper to customize the UI without affecting original kepler.gl
-const CustomFilterWrapper = styled.div`
+const CustomLayerWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   
   /* Override button styles */
   .add-data-button,
-  .add-filter-button {
+  .add-layer-button {
     width: 90px !important;
     max-width: 90px !important;
     padding: 6px 8px !important;
@@ -40,9 +40,9 @@ const CustomFilterWrapper = styled.div`
   
   /* Override button text content - more specific targeting */
   .add-data-button,
-  .add-filter-button,
+  .add-layer-button,
   button[class*="add-data"],
-  button[class*="add-filter"] {
+  button[class*="add-layer"] {
     width: 90px !important;
     max-width: 90px !important;
     padding: 6px 8px !important;
@@ -51,31 +51,9 @@ const CustomFilterWrapper = styled.div`
     border-radius: 4px !important;
   }
   
-  /* Target all buttons in the filter manager that contain localization keys */
-  .side-panel-section button {
-    position: relative;
-    
-    /* Hide text that starts with layerManager or filterManager */
-    &[class*="layerManager"],
-    &[class*="filterManager"] {
-      font-size: 0 !important;
-      
-      &::after {
-        font-size: 11px !important;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        white-space: nowrap;
-      }
-    }
-  }
-  
-  /* Custom button text replacement via JavaScript will be handled in useEffect */
-  
   /* Override panel titles */
   .panel-title,
-  .filter-manager-title {
+  .layer-manager-title {
     font-size: 11px !important;
     font-weight: 500 !important;
     text-transform: uppercase !important;
@@ -84,8 +62,8 @@ const CustomFilterWrapper = styled.div`
     color: #666 !important;
   }
   
-  /* Ensure filter title is properly styled */
-  .filter-manager-title {
+  /* Ensure layer title is properly styled */
+  .layer-manager-title {
     display: block !important;
   }
   
@@ -111,7 +89,7 @@ const CustomFilterWrapper = styled.div`
     margin: 0 !important;
   }
   
-  /* LAYOUT ALIGNMENT CUSTOMIZATIONS - MAKE DATASET SECTION MATCH FILTER SECTION */
+  /* LAYOUT ALIGNMENT CUSTOMIZATIONS */
   
   /* Reset all container paddings to ensure consistent base */
   .side-panel-section {
@@ -121,11 +99,9 @@ const CustomFilterWrapper = styled.div`
     box-sizing: border-box !important;
   }
   
-  /* 1. Transform Dataset Section to use PanelHeaderRow layout like Filter Section */
-  
   /* Target the dataset section container directly */
-  .filter-manager > div[class*="StyledDatasetSection"],
-  .filter-manager > div:first-child {
+  .layer-manager > div[class*="StyledDatasetSection"],
+  .layer-manager > div:first-child {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
@@ -155,7 +131,7 @@ const CustomFilterWrapper = styled.div`
         padding: 0 !important;
       }
       
-      /* Add Data button positioning - match filter button */
+      /* Add Data button positioning */
       .add-data-button {
         margin: 0 !important;
         padding: 6px 8px !important;
@@ -167,18 +143,18 @@ const CustomFilterWrapper = styled.div`
   }
   
   /* Force dataset section margins - comprehensive targeting */
-  .filter-manager > div:first-child > div,
-  .filter-manager > div:nth-child(2) > div,
-  .filter-manager div[class*="StyledDatasetSection"] > div,
-  .filter-manager div[class*="StyledDatasetTitle"],
-  .filter-manager .dataset-section > div:first-child {
+  .layer-manager > div:first-child > div,
+  .layer-manager > div:nth-child(2) > div,
+  .layer-manager div[class*="StyledDatasetSection"] > div,
+  .layer-manager div[class*="StyledDatasetTitle"],
+  .layer-manager .dataset-section > div:first-child {
     margin-left: 16px !important;
     margin-right: 16px !important;
     width: calc(100% - 32px) !important;
     box-sizing: border-box !important;
     max-width: calc(100% - 32px) !important;
     
-    /* Force flex layout to match filter section */
+    /* Force flex layout to match layer section */
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -186,16 +162,15 @@ const CustomFilterWrapper = styled.div`
     margin-bottom: 32px !important;
   }
   
-  /* 2. Keep Filter Panel with its natural PanelHeaderRow structure */
+  /* Layer Panel with its natural PanelHeaderRow structure */
   .layer-manager-header {
-    /* Let it use its natural PanelHeaderRow styles */
     /* Add matching margins */
     margin-left: 16px !important;
     margin-right: 16px !important;
     width: calc(100% - 32px) !important;
     box-sizing: border-box !important;
     
-    /* Make filter title match dataset title exactly */
+    /* Make layer title match dataset title exactly */
     .panel-title {
       font-size: 11px !important;
       line-height: 1.2 !important;
@@ -207,8 +182,8 @@ const CustomFilterWrapper = styled.div`
       padding: 0 !important;
     }
     
-    /* Just ensure button consistency */
-    .add-filter-button {
+    /* Ensure button consistency */
+    .add-layer-button {
       margin: 0 !important;
       padding: 6px 8px !important;
       flex-shrink: 0 !important;
@@ -217,8 +192,8 @@ const CustomFilterWrapper = styled.div`
     }
   }
   
-  /* 3. Override any parent container padding that might affect width */
-  .filter-manager {
+  /* Override the layer manager */
+  .layer-manager {
     width: 100% !important;
     
     .side-panel-section {
@@ -231,7 +206,7 @@ const CustomFilterWrapper = styled.div`
       }
     }
     
-    /* Ensure dataset section gets margins - very specific targeting */
+    /* Ensure dataset section gets margins */
     .dataset-section {
       padding: 0 !important;
       margin: 0 !important;
@@ -246,15 +221,6 @@ const CustomFilterWrapper = styled.div`
       }
     }
     
-    /* Catch-all for any element that contains "Datasets" text */
-    div:has(span:contains("Datasets")),
-    div:has(span:contains("Dataset")) {
-      margin-left: 16px !important;
-      margin-right: 16px !important;
-      width: calc(100% - 32px) !important;
-      box-sizing: border-box !important;
-    }
-    
     /* Ultimate fallback - target by structure position */
     > div:first-child,
     > div:nth-child(1) {
@@ -266,16 +232,6 @@ const CustomFilterWrapper = styled.div`
       }
     }
   }
-  
-  /* 3. Additional alignment options (uncomment to use) */
-  
-  /* For center alignment:
-  .dataset-section > div:first-child,
-  .layer-manager-header {
-    justify-content: center !important;
-    gap: 16px !important;
-  }
-  */
   
   /* Override toggle button styles */
   .layer-panel-toggle-option {
@@ -294,19 +250,22 @@ const CustomFilterWrapper = styled.div`
   }
 `;
 
-interface CustomFilterManagerProps {
+interface CustomLayerManagerProps {
   keplerGlId?: string;
 }
 
-const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = 'map'}) => {
+const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'map'}) => {
   const dispatch = useDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Get state from kepler.gl Redux store with safe fallbacks
-  const filters = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.filters || []);
   const datasets = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.datasets || {});
   const layers = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layers || []);
-  const panelListView = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.uiState?.filterPanelListView || 'list');
+  const layerOrder = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerOrder || []);
+  const layerClasses = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerClasses || {});
+  const layerBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.layerBlending || 'normal') as any;
+  const overlayBlending = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.visState?.overlayBlending || 'normal') as any;
+  const panelListView = useSelector((state: any) => state.demo?.keplerGl?.[keplerGlId]?.uiState?.layerPanelListView || 'list');
 
   // Function to replace button text and panel titles
   const replaceButtonText = useCallback(() => {
@@ -317,11 +276,10 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
     buttons.forEach(button => {
       const buttonText = button.textContent || '';
       
-      // Replace Add Data button text (more comprehensive matching)
+      // Replace Add Data button text
       if (buttonText.includes('layerManager.addData') || 
           buttonText.includes('addData') ||
           buttonText.includes('sidebar.panels.layer')) {
-        // Find the text node and replace it
         const walker = document.createTreeWalker(
           button,
           NodeFilter.SHOW_TEXT,
@@ -337,11 +295,10 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
         }
       }
       
-      // Replace Add Filter button text (more comprehensive matching)
-      if (buttonText.includes('layerManager.addFilter') || 
-          buttonText.includes('addFilter') ||
-          buttonText.includes('filterManager.addFilter')) {
-        // Find the text node and replace it
+      // Replace Add Layer button text
+      if (buttonText.includes('layerManager.addLayer') || 
+          buttonText.includes('addLayer') ||
+          buttonText.includes('Add Layer')) {
         const walker = document.createTreeWalker(
           button,
           NodeFilter.SHOW_TEXT,
@@ -350,26 +307,25 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
         
         let textNode;
         while (textNode = walker.nextNode()) {
-          if (textNode.textContent?.includes('layerManager.addFilter') || 
-              textNode.textContent?.includes('addFilter') ||
-              textNode.textContent?.includes('filterManager.addFilter')) {
-            textNode.textContent = 'Add Filter';
+          if (textNode.textContent?.includes('layerManager.addLayer') || 
+              textNode.textContent?.includes('addLayer')) {
+            textNode.textContent = 'Add Layer';
           }
         }
       }
     });
 
     // Replace panel title text
-    const titleElements = wrapperRef.current.querySelectorAll('.panel-title, .filter-manager-title');
+    const titleElements = wrapperRef.current.querySelectorAll('.panel-title, .layer-manager-title');
     titleElements.forEach(element => {
       const titleText = element.textContent || '';
       
-      // Replace "SIDEBAR.PANELS.FILTER" with "Filters" (proper case to match "Datasets")
-      if (titleText.includes('SIDEBAR.PANELS.FILTER') || 
-          titleText.includes('sidebar.panels.filter') ||
-          titleText.includes('filterManager.title') ||
-          titleText.includes('FILTERS')) {
-        element.textContent = 'Filters';
+      // Replace "SIDEBAR.PANELS.LAYER" with "Layers"
+      if (titleText.includes('SIDEBAR.PANELS.LAYER') || 
+          titleText.includes('sidebar.panels.layer') ||
+          titleText.includes('layerManager.title') ||
+          titleText.includes('LAYERS')) {
+        element.textContent = 'Layers';
       }
     });
 
@@ -378,8 +334,8 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
     allTextElements.forEach(element => {
       if (element.children.length === 0) { // Only text nodes
         const text = element.textContent || '';
-        if (text.includes('SIDEBAR.PANELS.FILTER') || text.includes('sidebar.panels.filter')) {
-          element.textContent = 'Filters';
+        if (text.includes('SIDEBAR.PANELS.LAYER') || text.includes('sidebar.panels.layer')) {
+          element.textContent = 'Layers';
         }
       }
     });
@@ -389,12 +345,12 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
   useEffect(() => {
     const timer = setTimeout(() => {
       replaceButtonText();
-    }, 100); // Small delay to ensure DOM is ready
+    }, 100);
     
     return () => clearTimeout(timer);
-  }, [replaceButtonText, filters, datasets]);
+  }, [replaceButtonText, layers, datasets]);
 
-  // Also replace text when datasets change (to handle Add Filter button state)
+  // Also replace text when datasets change
   useEffect(() => {
     replaceButtonText();
   }, [datasets, replaceButtonText]);
@@ -406,7 +362,6 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          // Small delay to ensure the DOM is stable
           setTimeout(() => {
             replaceButtonText();
           }, 50);
@@ -429,7 +384,7 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
   useEffect(() => {
     const interval = setInterval(() => {
       replaceButtonText();
-    }, 1000); // Check every second
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [replaceButtonText]);
@@ -446,7 +401,7 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
   );
 
   const removeDataset = useCallback(
-    (dataId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.removeDataset(dataId))),
+    (dataId: string) => dispatch(wrapTo(keplerGlId, UIStateActions.openDeleteModal(dataId))),
     [dispatch, keplerGlId]
   );
 
@@ -455,90 +410,164 @@ const CustomFilterManager: React.FC<CustomFilterManagerProps> = ({keplerGlId = '
     [dispatch, keplerGlId]
   );
 
-  // Action handlers for filter operations
-  const addFilter = useCallback(
-    (dataId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.addFilter(dataId))),
-    [dispatch, keplerGlId]
-  );
-
-  const removeFilter = useCallback(
-    (idx: number) => dispatch(wrapTo(keplerGlId, VisStateActions.removeFilter(idx))),
-    [dispatch, keplerGlId]
-  );
-
-  const setFilter = useCallback(
-    (idx: number, prop: string, value: any) => dispatch(wrapTo(keplerGlId, VisStateActions.setFilter(idx, prop, value))),
-    [dispatch, keplerGlId]
-  );
-
-  const setFilterPlot = useCallback(
-    (idx: number, newProp: any) => dispatch(wrapTo(keplerGlId, VisStateActions.setFilterPlot(idx, newProp))),
-    [dispatch, keplerGlId]
-  );
-
-  const toggleFilterAnimation = useCallback(
-    (idx: number) => dispatch(wrapTo(keplerGlId, VisStateActions.toggleFilterAnimation(idx))),
-    [dispatch, keplerGlId]
-  );
-
-  const toggleFilterFeature = useCallback(
-    (idx: number) => dispatch(wrapTo(keplerGlId, VisStateActions.toggleFilterFeature(idx))),
-    [dispatch, keplerGlId]
-  );
-
-  const setFilterView = useCallback(
-    (idx: number, view: any) => dispatch(wrapTo(keplerGlId, VisStateActions.setFilterView(idx, view))),
-    [dispatch, keplerGlId]
-  );
-
-  const syncTimeFilterWithLayerTimeline = useCallback(
-    (filterId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.syncTimeFilterWithLayerTimeline(filterId))),
-    [dispatch, keplerGlId]
-  );
-
+  // UI State Actions
   const togglePanelListView = useCallback(
     (params: any) => dispatch(wrapTo(keplerGlId, UIStateActions.togglePanelListView(params))),
     [dispatch, keplerGlId]
   );
 
-  const visStateActions = useMemo(() => ({
-    addFilter,
-    removeFilter,
-    setFilter,
-    setFilterPlot,
-    toggleFilterAnimation,
-    toggleFilterFeature,
-    setFilterView,
-    syncTimeFilterWithLayerTimeline
-  }), [addFilter, removeFilter, setFilter, setFilterPlot, toggleFilterAnimation, toggleFilterFeature, setFilterView, syncTimeFilterWithLayerTimeline]);
+  const toggleModal = useCallback(
+    (modal: string) => dispatch(wrapTo(keplerGlId, UIStateActions.toggleModal(modal))),
+    [dispatch, keplerGlId]
+  );
 
+  // Vis State Actions for layers
+  const addLayer = useCallback(
+    (props?: any, datasetId?: string) => dispatch(wrapTo(keplerGlId, VisStateActions.addLayer(props, datasetId))),
+    [dispatch, keplerGlId]
+  );
+
+  const removeLayer = useCallback(
+    (layerId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.removeLayer(layerId))),
+    [dispatch, keplerGlId]
+  );
+
+  const duplicateLayer = useCallback(
+    (layerId: string) => dispatch(wrapTo(keplerGlId, VisStateActions.duplicateLayer(layerId))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerConfigChange = useCallback(
+    (layer: any, newConfig: any) => dispatch(wrapTo(keplerGlId, VisStateActions.layerConfigChange(layer, newConfig))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerTypeChange = useCallback(
+    (layer: any, newType: string) => dispatch(wrapTo(keplerGlId, VisStateActions.layerTypeChange(layer, newType))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerVisConfigChange = useCallback(
+    (layer: any, newVisConfig: any) => dispatch(wrapTo(keplerGlId, VisStateActions.layerVisConfigChange(layer, newVisConfig))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerVisualChannelConfigChange = useCallback(
+    (layer: any, newConfig: any, channel: string, newVisConfig?: any) => dispatch(wrapTo(keplerGlId, VisStateActions.layerVisualChannelConfigChange(layer, newConfig, channel, newVisConfig))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerColorUIChange = useCallback(
+    (layer: any, prop: string, newConfig: any) => dispatch(wrapTo(keplerGlId, VisStateActions.layerColorUIChange(layer, prop, newConfig))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerTextLabelChange = useCallback(
+    (layer: any, idx: number | 'all', prop: string, value: any) => dispatch(wrapTo(keplerGlId, VisStateActions.layerTextLabelChange(layer, idx, prop, value))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerToggleVisibility = useCallback(
+    (layerId: string, isVisible: boolean) => dispatch(wrapTo(keplerGlId, VisStateActions.layerToggleVisibility(layerId, isVisible))),
+    [dispatch, keplerGlId]
+  );
+
+  const layerSetIsValid = useCallback(
+    (layer: any, isValid: boolean) => dispatch(wrapTo(keplerGlId, VisStateActions.layerSetIsValid(layer, isValid))),
+    [dispatch, keplerGlId]
+  );
+
+  const updateLayerBlending = useCallback(
+    (mode: string) => dispatch(wrapTo(keplerGlId, VisStateActions.updateLayerBlending(mode))),
+    [dispatch, keplerGlId]
+  );
+
+  const updateOverlayBlending = useCallback(
+    (mode: string) => dispatch(wrapTo(keplerGlId, VisStateActions.updateOverlayBlending(mode))),
+    [dispatch, keplerGlId]
+  );
+
+  // Map State Actions
+  const fitBounds = useCallback(
+    (bounds: any) => dispatch(wrapTo(keplerGlId, MapStateActions.fitBounds(bounds))),
+    [dispatch, keplerGlId]
+  );
+
+  // Create action objects for the LayerManager
   const uiStateActions = useMemo(() => ({
-    togglePanelListView
-  }), [togglePanelListView]);
+    togglePanelListView,
+    toggleModal,
+    openDeleteModal: removeDataset
+  }), [togglePanelListView, toggleModal, removeDataset]);
+
+  const visStateActions = useMemo(() => ({
+    addLayer,
+    removeLayer,
+    duplicateLayer,
+    layerConfigChange,
+    layerTypeChange,
+    layerVisConfigChange,
+    layerVisualChannelConfigChange,
+    layerColorUIChange,
+    layerTextLabelChange,
+    layerToggleVisibility,
+    layerSetIsValid,
+    updateLayerBlending,
+    updateOverlayBlending,
+    showDatasetTable,
+    updateTableColor,
+    removeDataset
+  }), [
+    addLayer,
+    removeLayer,
+    duplicateLayer,
+    layerConfigChange,
+    layerTypeChange,
+    layerVisConfigChange,
+    layerVisualChannelConfigChange,
+    layerColorUIChange,
+    layerTextLabelChange,
+    layerToggleVisibility,
+    layerSetIsValid,
+    updateLayerBlending,
+    updateOverlayBlending,
+    showDatasetTable,
+    updateTableColor,
+    removeDataset
+  ]);
+
+  const mapStateActions = useMemo(() => ({
+    fitBounds
+  }), [fitBounds]);
 
   const panelMetadata = {
-    id: 'filter',
-    label: 'Filters',
+    id: 'layer',
+    label: 'Layers',
     iconComponent: null
   };
 
   return (
-    <CustomFilterWrapper ref={wrapperRef}>
-      <FilterManager
-        filters={filters}
+    <CustomLayerWrapper ref={wrapperRef}>
+      {/* @ts-ignore */}
+      <LayerManager
         datasets={datasets}
         layers={layers}
+        layerOrder={layerOrder}
+        layerClasses={layerClasses}
+        layerBlending={layerBlending}
+        overlayBlending={overlayBlending}
+        uiStateActions={uiStateActions}
+        visStateActions={visStateActions}
+        mapStateActions={mapStateActions}
+        showAddDataModal={showAddDataModal}
+        removeDataset={removeDataset}
         showDatasetTable={showDatasetTable}
         updateTableColor={updateTableColor}
-        removeDataset={removeDataset}
-        showAddDataModal={showAddDataModal}
-        panelMetadata={panelMetadata}
         panelListView={panelListView}
-        visStateActions={visStateActions}
-        uiStateActions={uiStateActions}
+        panelMetadata={panelMetadata}
       />
-    </CustomFilterWrapper>
+    </CustomLayerWrapper>
   );
 };
 
-export default CustomFilterManager; 
+export default CustomLayerManager; 
