@@ -5,6 +5,9 @@ import React from 'react';
 import styled from 'styled-components';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {wrapTo} from '@kepler.gl/actions';
+import {MapStateActions} from '@kepler.gl/actions';
 
 // Import KeplerGl and necessary dependencies
 const KeplerGl = require('@kepler.gl/components').injectComponents([
@@ -203,6 +206,19 @@ const MapArea: React.FC<MapAreaProps> = ({
   onToggleLeft, 
   onToggleRight 
 }) => {
+  const dispatch = useDispatch();
+  const keplerGlId = 'map';
+  
+  // Get the dragRotate state from Kepler.gl to determine if 3D is active
+  const dragRotate = useSelector((state: any) => 
+    state.demo?.keplerGl?.[keplerGlId]?.mapState?.dragRotate || false
+  );
+  
+  // Handler for 3D toggle
+  const handleToggle3D = () => {
+    dispatch(wrapTo(keplerGlId, MapStateActions.togglePerspective()));
+  };
+  
   return (
     <MapContainer>
       <MapMenuButtons>
@@ -218,8 +234,12 @@ const MapArea: React.FC<MapAreaProps> = ({
         </LeftToggleButton>
         
         <MenuButtonGroup>
-          <MenuButton className="active">Map</MenuButton>
-          <MenuButton>3D</MenuButton>
+          <MenuButton 
+            className={dragRotate ? 'active' : ''}
+            onClick={handleToggle3D}
+          >
+            3D View
+          </MenuButton>
           <MenuButton>Satellite</MenuButton>
         </MenuButtonGroup>
         <MenuButtonGroup>
