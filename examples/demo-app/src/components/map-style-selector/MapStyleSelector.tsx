@@ -168,7 +168,7 @@ const MapStyleSelector: React.FC<MapStyleSelectorProps> = ({
       {/* Map Style Section */}
       <div style={{padding: '0 16px'}}>
         <MapStyleLabel>
-          Base map
+          Basemap
         </MapStyleLabel>
 
         {/* Map Style Dropdown */}

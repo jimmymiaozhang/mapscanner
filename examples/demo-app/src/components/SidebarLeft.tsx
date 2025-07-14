@@ -164,7 +164,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({ onToggle, isVisible, keplerGl
             $isActive={activeTab === 'styles'}
             onClick={() => setActiveTab('styles')}
           >
-            Styles
+            Basemaps
           </MenuButton>
         </MenuButtons>
         <ContentArea $isFiltersTab={activeTab === 'filters'} $isLayersTab={activeTab === 'layers'}>

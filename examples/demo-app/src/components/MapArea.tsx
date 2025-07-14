@@ -17,6 +17,7 @@ import {CLOUD_PROVIDERS_CONFIGURATION, DEFAULT_FEATURE_FLAGS} from '../constants
 import {messages} from '../constants/localization';
 import {CLOUD_PROVIDERS} from '../cloud-providers';
 import {onExportFileSuccess, onLoadCloudMapSuccess} from '../actions';
+import {THEME} from '@kepler.gl/constants';
 
 // Import keplerGlGetState function
 const keplerGlGetState = state => state.demo.keplerGl;
@@ -256,6 +257,7 @@ const MapArea: React.FC<MapAreaProps> = ({
                   onExportToCloudSuccess={onExportFileSuccess}
                   onLoadCloudMapSuccess={onLoadCloudMapSuccess}
                   featureFlags={DEFAULT_FEATURE_FLAGS}
+                  theme={THEME.light}
                 />
               </div>
             )}

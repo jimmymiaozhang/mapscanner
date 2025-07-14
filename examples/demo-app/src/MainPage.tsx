@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import styled, {ThemeProvider, StyleSheetManager} from 'styled-components';
 import {IntlProvider} from 'react-intl';
 import isPropValid from '@emotion/is-prop-valid';
-import {theme} from '@kepler.gl/styles';
+import {themeLT as theme} from '@kepler.gl/styles';
 import {messages} from './constants/localization';
 
 // Placeholder components

@@ -20,7 +20,10 @@ const demoMessagesEn = {
   'loadRemoteMap.clickHere': 'click here',
   'loadRemoteMap.fetch': 'Fetch',
   'tooltip.hideSQLPanel': 'Hide SQL Panel',
-  'tooltip.showSQLPanel': 'Show SQL Panel'
+  'tooltip.showSQLPanel': 'Show SQL Panel',
+  // Custom blending section labels
+  'layerBlending.title': 'Layers overlay settings',
+  'overlayBlending.title': 'Basemap overlay settings'
 };
 
 // Merge kepler.gl core messages with demo-specific messages

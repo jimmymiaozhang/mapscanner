@@ -17,15 +17,112 @@ const CustomLayerWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   
+  /* Hide info icon next to "Base Map Overlay Settings" */
+  div[id*="overlayBlending-description"] {
+    display: none !important;
+  }
+  
+  /* Additional selectors to target the info icon */
+  [id*="overlayBlending-description"] {
+    display: none !important;
+  }
+  
+  /* Target the InfoHelper wrapper */
+  div[style*="float: right"] {
+    display: none !important;
+  }
+  
+  /* Target any info helper component in overlay blending section */
+  .side-panel-section:has([id*="overlayBlending"]) .info-helper,
+  .side-panel-section:has([id*="overlayBlending"]) [class*="info-helper"] {
+    display: none !important;
+  }
+  
+  /* Fix layer hover background color consistency */
+  .layer-panel__header:hover {
+    .layer-panel__header__actions__hidden {
+      background-color: inherit !important;
+    }
+  }
+  
+  /* Ensure all action icons have consistent hover background */
+  .layer-panel__header:hover .layer-panel__header__actions,
+  .layer-panel__header:hover .layer-panel__header__actions__hidden {
+    background-color: inherit !important;
+  }
+  
+  /* Comprehensive focus outline removal for all layer panel elements */
+  .layer-manager *:focus,
+  .layer-manager *:active,
+  .layer-manager button:focus,
+  .layer-manager button:active,
+  .layer-manager [role="button"]:focus,
+  .layer-manager [role="button"]:active,
+  .layer-manager .panel-header__action:focus,
+  .layer-manager .panel-header__action:active,
+  .layer-manager .layer-panel__header:focus,
+  .layer-manager .layer-panel__header:active,
+  .layer-manager .layer-panel__header button:focus,
+  .layer-manager .layer-panel__header button:active,
+  .layer-manager .layer-panel__header [role="button"]:focus,
+  .layer-manager .layer-panel__header [role="button"]:active,
+  .layer-manager .layer-panel__header .panel-header__action:focus,
+  .layer-manager .layer-panel__header .panel-header__action:active,
+  .layer-manager .layer-panel button:focus,
+  .layer-manager .layer-panel button:active,
+  .layer-manager .layer-panel [role="button"]:focus,
+  .layer-manager .layer-panel [role="button"]:active,
+  .layer-manager .layer-panel .panel-header__action:focus,
+  .layer-manager .layer-panel .panel-header__action:active,
+  .layer-manager svg:focus,
+  .layer-manager svg:active,
+  .layer-manager .layer__remove-layer:focus,
+  .layer-manager .layer__remove-layer:active,
+  .layer-manager .layer__duplicate:focus,
+  .layer-manager .layer__duplicate:active,
+  .layer-manager .layer__zoom-to-layer:focus,
+  .layer-manager .layer__zoom-to-layer:active,
+  .layer-manager .layer__visibility-toggle:focus,
+  .layer-manager .layer__visibility-toggle:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+  }
+  
+  /* Global focus state reset specifically for this component */
+  .layer-manager *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Rotate dropdown arrow based on layer panel expanded state */
+  .layer-panel__header .layer__enable-config svg {
+    transition: transform 0.3s ease;
+  }
+  
+  /* When layer panel is expanded (has is-open class), rotate the arrow up */
+  .layer-panel__header .layer__enable-config.is-open svg {
+    transform: rotate(180deg);
+  }
+  
+  /* Alternative selector for when layer configurator is active */
+  .layer-panel__header.active .layer__enable-config svg,
+  .layer-panel:has(.layer-panel__config) .layer__enable-config svg {
+    transform: rotate(180deg);
+  }
+  
   /* Override button styles */
   .add-data-button,
   .add-layer-button {
-    width: 90px !important;
-    max-width: 90px !important;
+    width: 140px !important;
+    max-width: 140px !important;
     padding: 6px 8px !important;
     font-size: 11px !important;
     height: 28px !important;
     border-radius: 4px !important;
+    white-space: nowrap !important;
     
     svg {
       width: 12px !important;
@@ -43,11 +140,12 @@ const CustomLayerWrapper = styled.div`
   .add-layer-button,
   button[class*="add-data"],
   button[class*="add-layer"] {
-    width: 90px !important;
-    max-width: 90px !important;
+    width: 140px !important;
+    max-width: 140px !important;
     padding: 6px 8px !important;
     font-size: 11px !important;
     height: 28px !important;
+    white-space: nowrap !important;
     border-radius: 4px !important;
   }
   
@@ -206,6 +304,68 @@ const CustomLayerWrapper = styled.div`
       }
     }
     
+    /* Constrain blending sections to match layer section width */
+    .layer-blending-selector,
+    .overlay-blending-selector,
+    [class*="LayerBlendingSelector"],
+    [class*="OverlayBlendingSelector"] {
+      margin-left: 16px !important;
+      margin-right: 16px !important;
+      width: calc(100% - 32px) !important;
+      box-sizing: border-box !important;
+      max-width: calc(100% - 32px) !important;
+    }
+    
+    /* Target blending sections by their content */
+    .side-panel-section:has([class*="blending"]),
+    .side-panel-section:has([class*="Blending"]) {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      width: calc(100% - 32px) !important;
+      margin-left: 16px !important;
+      margin-right: 16px !important;
+      box-sizing: border-box !important;
+      max-width: calc(100% - 32px) !important;
+    }
+    
+    /* Target any sections containing "Layer Blending" or "Map Overlay Blending" text */
+    .side-panel-section {
+      &:has(*:contains("Layer Blending")),
+      &:has(*:contains("Map Overlay Blending")) {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        width: calc(100% - 32px) !important;
+        margin-left: 16px !important;
+        margin-right: 16px !important;
+        box-sizing: border-box !important;
+        max-width: calc(100% - 32px) !important;
+      }
+    }
+    
+    /* Additional targeting for blending sections by structure */
+    .side-panel-section:nth-last-child(2),
+    .side-panel-section:nth-last-child(1) {
+      margin-left: 16px !important;
+      margin-right: 16px !important;
+      width: calc(100% - 32px) !important;
+      box-sizing: border-box !important;
+      max-width: calc(100% - 32px) !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    /* Target blending sections by their typical structure */
+    .side-panel-section:last-child,
+    .side-panel-section:nth-last-child(3) {
+      margin-left: 16px !important;
+      margin-right: 16px !important;
+      width: calc(100% - 32px) !important;
+      box-sizing: border-box !important;
+      max-width: calc(100% - 32px) !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
     /* Ensure dataset section gets margins */
     .dataset-section {
       padding: 0 !important;
@@ -281,6 +441,305 @@ const CustomLayerWrapper = styled.div`
   .layer-manager > .side-panel-divider:first-of-type,
   .layer-manager > [class*="SidePanelDivider"]:first-of-type {
     display: none !important;
+  }
+  
+  /* LIGHT THEME OVERRIDES FOR LAYER COMPONENTS */
+  
+  /* Override dark layer panel backgrounds */
+  .layer-panel,
+  [class*="LayerPanel"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* Override dark layer configurator backgrounds */
+  .layer-panel__config,
+  [class*="StyledLayerConfigurator"] {
+    background-color: #ffffff !important;
+    border-left-color: #e0e0e0 !important;
+  }
+  
+  /* Override dark layer header backgrounds */
+  .layer-panel__header,
+  [class*="StyledLayerPanelHeader"] {
+    background-color: #f8f9fa !important;
+    border-color: #e0e0e0 !important;
+  }
+  
+  /* Override dark layer header hover states */
+  .layer-panel__header:hover,
+  [class*="StyledLayerPanelHeader"]:hover {
+    background-color: #e9ecef !important;
+  }
+  
+  /* Override dark dropdown backgrounds in layers */
+  .layer-manager .item-selector__dropdown {
+    background-color: #f7f7f7 !important;
+    border: 1px solid #d3d8e0 !important;
+    color: #545454 !important;
+  }
+  
+  /* Override dark dropdown hover states */
+  .layer-manager .item-selector__dropdown:hover {
+    background-color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+  
+  /* Override dark list selector backgrounds */
+  .layer-manager .list-selector {
+    background-color: #ffffff !important;
+    border-top: 1px solid #d3d8e0 !important;
+  }
+  
+  /* Override dark list items */
+  .layer-manager .list__item {
+    color: #545454 !important;
+    background-color: transparent !important;
+  }
+  
+  .layer-manager .list__item:hover {
+    background-color: #f0f0f0 !important;
+  }
+  
+  .layer-manager .list__item.selected {
+    background-color: #e8e8e8 !important;
+  }
+  
+  /* TARGET BLENDING DROPDOWN MENUS SPECIFICALLY */
+  
+  /* Override blending dropdown containers */
+  .layer-manager [class*="DropdownList"],
+  .layer-manager [class*="DropdownListWrapper"] {
+    background-color: #ffffff !important;
+    border: 1px solid #d3d8e0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Override blending dropdown items */
+  .layer-manager [class*="DropdownListItem"],
+  .layer-manager .dropdown-list__item {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding: 8px 12px !important;
+  }
+  
+  .layer-manager [class*="DropdownListItem"]:hover,
+  .layer-manager .dropdown-list__item:hover {
+    background-color: #f8f9fa !important;
+    color: #333333 !important;
+  }
+  
+  .layer-manager [class*="DropdownListItem"].selected,
+  .layer-manager .dropdown-list__item.selected {
+    background-color: #e3f2fd !important;
+    color: #1976d2 !important;
+  }
+  
+  /* Target specific blending selector dropdowns */
+  .layer-manager .layer-blending-selector [class*="Dropdown"],
+  .layer-manager .overlay-blending-selector [class*="Dropdown"],
+  .layer-manager [class*="LayerBlendingSelector"] [class*="Dropdown"],
+  .layer-manager [class*="OverlayBlendingSelector"] [class*="Dropdown"] {
+    background-color: #ffffff !important;
+    border: 1px solid #d3d8e0 !important;
+  }
+  
+  /* Override dark backgrounds in blending dropdown lists */
+  .layer-manager .layer-blending-selector [class*="List"],
+  .layer-manager .overlay-blending-selector [class*="List"],
+  .layer-manager [class*="LayerBlendingSelector"] [class*="List"],
+  .layer-manager [class*="OverlayBlendingSelector"] [class*="List"] {
+    background-color: #ffffff !important;
+    border: 1px solid #d3d8e0 !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Override dark backgrounds in blending dropdown list items */
+  .layer-manager .layer-blending-selector [class*="ListItem"],
+  .layer-manager .overlay-blending-selector [class*="ListItem"],
+  .layer-manager [class*="LayerBlendingSelector"] [class*="ListItem"],
+  .layer-manager [class*="OverlayBlendingSelector"] [class*="ListItem"] {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    cursor: pointer !important;
+  }
+  
+  .layer-manager .layer-blending-selector [class*="ListItem"]:hover,
+  .layer-manager .overlay-blending-selector [class*="ListItem"]:hover,
+  .layer-manager [class*="LayerBlendingSelector"] [class*="ListItem"]:hover,
+  .layer-manager [class*="OverlayBlendingSelector"] [class*="ListItem"]:hover {
+    background-color: #f8f9fa !important;
+    color: #333333 !important;
+  }
+  
+  .layer-manager .layer-blending-selector [class*="ListItem"].selected,
+  .layer-manager .overlay-blending-selector [class*="ListItem"].selected,
+  .layer-manager [class*="LayerBlendingSelector"] [class*="ListItem"].selected,
+  .layer-manager [class*="OverlayBlendingSelector"] [class*="ListItem"].selected {
+    background-color: #e3f2fd !important;
+    color: #1976d2 !important;
+  }
+  
+  /* Override dark layer type dropdown backgrounds */
+  .layer-manager [class*="DropdownListWrapper"] {
+    background-color: #ffffff !important;
+    border-top: 1px solid #d3d8e0 !important;
+  }
+  
+  /* Override dark field selector backgrounds */
+  .layer-manager .field-selector,
+  .layer-manager [class*="FieldSelector"] {
+    background-color: #f7f7f7 !important;
+  }
+  
+  /* Override any remaining dark backgrounds with specific color targets */
+  .layer-manager [style*="background-color: rgb(28, 34, 51)"],
+  .layer-manager [style*="background-color: #1c2233"],
+  .layer-manager [style*="background-color: rgb(36, 39, 48)"], 
+  .layer-manager [style*="background-color: #242730"],
+  .layer-manager [style*="background-color: rgb(41, 50, 60)"],
+  .layer-manager [style*="background-color: #29323c"],
+  .layer-manager [style*="background-color: rgb(41, 46, 54)"],
+  .layer-manager [style*="background-color: #292e36"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* Override text colors for better light theme contrast */
+  .layer-manager .layer__title {
+    color: #333333 !important;
+  }
+  
+  .layer-manager .layer__title__type {
+    color: #666666 !important;
+  }
+  
+  /* Override input field styling in layers */
+  .layer-manager input {
+    background-color: #ffffff !important;
+    border: 1px solid #d3d8e0 !important;
+    color: #545454 !important;
+  }
+  
+  .layer-manager input:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25) !important;
+  }
+  
+  /* Override dark backgrounds in layer config groups */
+  .layer-manager .layer-config-group,
+  .layer-manager [class*="LayerConfigGroup"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* Override dark slider backgrounds */
+  .layer-manager .range-slider,
+  .layer-manager [class*="RangeSlider"] {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Override dark switch/toggle backgrounds */
+  .layer-manager .switch,
+  .layer-manager [class*="Switch"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* Override dark color picker backgrounds */
+  .layer-manager .color-picker,
+  .layer-manager [class*="ColorPicker"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* Ensure all kepler.gl styled components in layer manager use light theme */
+  .layer-manager [class*="styled__"],
+  .layer-manager [class*="Styled"] {
+    background-color: #ffffff !important;
+  }
+  
+  /* FORCE LIGHT THEME FOR BLENDING DROPDOWN MENUS */
+  
+  /* Target the ItemSelector components inside blending sections */
+  .layer-manager .side-panel-section .item-selector .list-selector {
+    background-color: #ffffff !important;
+    border-top: 1px solid #d3d8e0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 2px !important;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Target list items inside blending dropdowns */
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    font-size: 11px !important;
+    padding: 3px 9px !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item:hover,
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item.hover {
+    background-color: #f8f9fa !important;
+    color: #333333 !important;
+    cursor: pointer !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item.selected {
+    background-color: #e3f2fd !important;
+    color: #1976d2 !important;
+  }
+  
+  /* Target the list item anchor tags */
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item .list__item__anchor {
+    color: #333333 !important;
+    padding-left: 3px !important;
+    font-size: 11px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item:hover .list__item__anchor,
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item.hover .list__item__anchor {
+    color: #333333 !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .list-selector .list__item.selected .list__item__anchor {
+    color: #1976d2 !important;
+  }
+  
+  /* Target the dropdown select component (the main button) */
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown {
+    background-color: #f7f7f7 !important;
+    border: 1px solid #d3d8e0 !important;
+    color: #333333 !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown:hover {
+    background-color: #ffffff !important;
+    border-color: #333333 !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown.active {
+    background-color: #ffffff !important;
+    border-color: #333333 !important;
+  }
+  
+  /* Target the dropdown select value */
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown__value {
+    color: #333333 !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown__value .list__item {
+    color: #333333 !important;
+    background-color: transparent !important;
+  }
+  
+  .layer-manager .side-panel-section .item-selector .item-selector__dropdown__value .list__item .list__item__anchor {
+    color: #333333 !important;
   }
 `;
 
@@ -450,6 +909,24 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
         }
       });
 
+      // Strategy 10: Constrain blending sections width to match layer section
+      const blendingSections = wrapperRef.current.querySelectorAll('.side-panel-section');
+      blendingSections.forEach(section => {
+        const sectionText = section.textContent || '';
+        
+        // Target sections containing "Layer Blending" or "Map Overlay Blending"
+        if (sectionText.includes('Layer Blending') || sectionText.includes('Map Overlay Blending')) {
+          // Apply the same width constraints as the layer header section
+          (section as HTMLElement).style.marginLeft = '16px';
+          (section as HTMLElement).style.marginRight = '16px';
+          (section as HTMLElement).style.width = 'calc(100% - 32px)';
+          (section as HTMLElement).style.boxSizing = 'border-box';
+          (section as HTMLElement).style.maxWidth = 'calc(100% - 32px)';
+          (section as HTMLElement).style.paddingLeft = '0';
+          (section as HTMLElement).style.paddingRight = '0';
+        }
+      });
+
       // Strategy 2: Target by CSS class names (if available)
       const styledDatasetSections = wrapperRef.current.querySelectorAll('[class*="StyledDatasetSection"]');
       styledDatasetSections.forEach(section => {
@@ -473,8 +950,52 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
         }
       });
 
-      // Strategy 4: Hide by structure - the DatasetSection should be the first major section 
+      // Strategy 4: Hide info icon next to "Base Map Overlay Settings"
+      const infoIcons = wrapperRef.current.querySelectorAll('[id*="overlayBlending-description"], [class*="info-helper"]');
+      infoIcons.forEach(icon => {
+        (icon as HTMLElement).style.display = 'none';
+      });
+
+      // Strategy 5: More specific targeting of the info icon
+      const overlayBlendingSections = wrapperRef.current.querySelectorAll('div');
+      overlayBlendingSections.forEach(section => {
+        const sectionText = section.textContent || '';
+        if (sectionText.includes('Base map overlay settings') || sectionText.includes('Base Map Overlay Settings')) {
+          // Look for info icon within this section
+          const infoElements = section.querySelectorAll('div[style*="float: right"], [id*="description"], [class*="info"]');
+          infoElements.forEach(el => {
+            (el as HTMLElement).style.display = 'none';
+          });
+        }
+      });
+
+              // Strategy 6: Set up MutationObserver to continuously hide info icon
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && wrapperRef.current) {
+              // Check for info icons that might have been added
+              const newInfoIcons = wrapperRef.current.querySelectorAll('[id*="overlayBlending-description"], [class*="info-helper"], div[style*="float: right"]');
+              newInfoIcons?.forEach(icon => {
+                (icon as HTMLElement).style.display = 'none';
+              });
+            }
+          });
+        });
+
+        // Start observing
+        if (wrapperRef.current) {
+          observer.observe(wrapperRef.current, {
+            childList: true,
+            subtree: true
+          });
+        }
+
+        // Cleanup observer on unmount
+        return () => observer.disconnect();
+
+        // Strategy 7: Hide by structure - the DatasetSection should be the first major section 
       // that contains dataset content
+      if (!wrapperRef.current) return;
       const layerManagerChildren = Array.from(wrapperRef.current.children);
       
       for (const child of layerManagerChildren) {
@@ -488,8 +1009,8 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
       }
 
       // Strategy 5: Hide the PanelViewListToggle (View List/View by Dataset icons)
-      const panelViewToggles = wrapperRef.current.querySelectorAll('[class*="PanelViewListToggle"], [class*="panel-view-list-toggle"]');
-      panelViewToggles.forEach(toggle => {
+      const panelViewToggles = wrapperRef.current?.querySelectorAll('[class*="PanelViewListToggle"], [class*="panel-view-list-toggle"]');
+      panelViewToggles?.forEach(toggle => {
         // Hide the toggle and its parent section
         const parentSection = toggle.closest('.side-panel-section') || toggle.closest('[class*="SidePanelSection"]');
         if (parentSection) {
@@ -500,7 +1021,7 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
       });
 
       // Strategy 6: Hide the first SidePanelSection (usually contains PanelViewListToggle)
-      const firstSidePanelSection = wrapperRef.current.querySelector('.side-panel-section');
+      const firstSidePanelSection = wrapperRef.current?.querySelector('.side-panel-section');
       if (firstSidePanelSection) {
         const sectionText = firstSidePanelSection.textContent || '';
         // If it doesn't contain layer content, hide it (it's likely the toggle section)
@@ -533,6 +1054,103 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
           (nextElement as HTMLElement).style.display = 'none';
         }
       }
+
+      // Strategy 9: Apply light theme to layer components (override dark backgrounds)
+      const darkColors = [
+        'rgb(28, 34, 51)',   // #1c2233
+        'rgb(36, 39, 48)',   // #242730
+        'rgb(41, 50, 60)',   // #29323c
+        'rgb(41, 46, 54)',   // #292e36
+        'rgb(45, 50, 62)',   // #2d323e
+        'rgb(60, 65, 75)',   // #3c414b
+      ];
+
+      // Find and convert dark background elements to light
+      const layerElements = wrapperRef.current.querySelectorAll('*');
+      layerElements.forEach(element => {
+        const computedStyle = window.getComputedStyle(element);
+        const bgColor = computedStyle.backgroundColor;
+        
+        // If it's a dark background, override it
+        if (darkColors.includes(bgColor)) {
+          (element as HTMLElement).style.backgroundColor = '#ffffff';
+          (element as HTMLElement).style.color = '#333333';
+        }
+        
+        // Also check for inline dark styles
+        const inlineStyle = (element as HTMLElement).style.backgroundColor;
+        if (darkColors.some(color => inlineStyle.includes(color.replace(/rgb\(|\)/g, '').replace(/,/g, ', ')))) {
+          (element as HTMLElement).style.backgroundColor = '#ffffff';
+          (element as HTMLElement).style.color = '#333333';
+        }
+      });
+
+      // Strategy 11: Target blending dropdown menus specifically for light theme
+      const blendingDropdowns = wrapperRef.current.querySelectorAll(
+        '[class*="DropdownList"], [class*="DropdownListWrapper"], [class*="DropdownListItem"], .dropdown-list__item'
+      );
+      
+      blendingDropdowns.forEach(dropdown => {
+        // Override dark backgrounds in blending dropdowns
+        (dropdown as HTMLElement).style.backgroundColor = '#ffffff';
+        (dropdown as HTMLElement).style.color = '#333333';
+        (dropdown as HTMLElement).style.border = '1px solid #d3d8e0';
+        
+        // Add hover effects
+        dropdown.addEventListener('mouseenter', () => {
+          if (dropdown.classList.contains('selected') || dropdown.className.includes('selected')) {
+            (dropdown as HTMLElement).style.backgroundColor = '#e3f2fd';
+            (dropdown as HTMLElement).style.color = '#1976d2';
+          } else {
+            (dropdown as HTMLElement).style.backgroundColor = '#f8f9fa';
+            (dropdown as HTMLElement).style.color = '#333333';
+          }
+        });
+        
+        dropdown.addEventListener('mouseleave', () => {
+          if (dropdown.classList.contains('selected') || dropdown.className.includes('selected')) {
+            (dropdown as HTMLElement).style.backgroundColor = '#e3f2fd';
+            (dropdown as HTMLElement).style.color = '#1976d2';
+          } else {
+            (dropdown as HTMLElement).style.backgroundColor = '#ffffff';
+            (dropdown as HTMLElement).style.color = '#333333';
+          }
+        });
+      });
+
+      // Strategy 12: Target ItemSelector components in blending sections
+      const itemSelectors = wrapperRef.current.querySelectorAll('.side-panel-section .item-selector');
+      itemSelectors.forEach(selector => {
+        // Target the dropdown button
+        const dropdownButton = selector.querySelector('.item-selector__dropdown');
+        if (dropdownButton) {
+          (dropdownButton as HTMLElement).style.backgroundColor = '#f7f7f7';
+          (dropdownButton as HTMLElement).style.border = '1px solid #d3d8e0';
+          (dropdownButton as HTMLElement).style.color = '#333333';
+        }
+
+        // Target the dropdown list
+        const dropdownList = selector.querySelector('.list-selector');
+        if (dropdownList) {
+          (dropdownList as HTMLElement).style.backgroundColor = '#ffffff';
+          (dropdownList as HTMLElement).style.borderTop = '1px solid #d3d8e0';
+          (dropdownList as HTMLElement).style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          
+          // Target list items
+          const listItems = dropdownList.querySelectorAll('.list__item');
+          listItems.forEach(item => {
+            (item as HTMLElement).style.backgroundColor = '#ffffff';
+            (item as HTMLElement).style.color = '#333333';
+            (item as HTMLElement).style.borderBottom = '1px solid #f0f0f0';
+            
+            // Target anchor tags
+            const anchor = item.querySelector('.list__item__anchor');
+            if (anchor) {
+              (anchor as HTMLElement).style.color = '#333333';
+            }
+          });
+        }
+      });
     };
 
     // Run multiple times to catch dynamically loaded content
@@ -630,6 +1248,121 @@ const CustomLayerManager: React.FC<CustomLayerManagerProps> = ({keplerGlId = 'ma
           (nextElement as HTMLElement).style.display = 'none';
         }
       }
+
+      // Apply light theme to layer components in MutationObserver
+      const darkColors = [
+        'rgb(28, 34, 51)',   // #1c2233
+        'rgb(36, 39, 48)',   // #242730
+        'rgb(41, 50, 60)',   // #29323c
+        'rgb(41, 46, 54)',   // #292e36
+        'rgb(45, 50, 62)',   // #2d323e
+        'rgb(60, 65, 75)',   // #3c414b
+      ];
+
+      // Find and convert dark background elements to light
+      const mutationElements = wrapperRef.current.querySelectorAll('*');
+      mutationElements.forEach(element => {
+        const computedStyle = window.getComputedStyle(element);
+        const bgColor = computedStyle.backgroundColor;
+        
+        // If it's a dark background, override it
+        if (darkColors.includes(bgColor)) {
+          (element as HTMLElement).style.backgroundColor = '#ffffff';
+          (element as HTMLElement).style.color = '#333333';
+        }
+        
+        // Also check for inline dark styles
+        const inlineStyle = (element as HTMLElement).style.backgroundColor;
+        if (darkColors.some(color => inlineStyle.includes(color.replace(/rgb\(|\)/g, '').replace(/,/g, ', ')))) {
+          (element as HTMLElement).style.backgroundColor = '#ffffff';
+          (element as HTMLElement).style.color = '#333333';
+        }
+      });
+
+      // Constrain blending sections width (also in MutationObserver)
+      const mutationBlendingSections = wrapperRef.current.querySelectorAll('.side-panel-section');
+      mutationBlendingSections.forEach(section => {
+        const sectionText = section.textContent || '';
+        
+        // Target sections containing "Layer Blending" or "Map Overlay Blending"
+        if (sectionText.includes('Layer Blending') || sectionText.includes('Map Overlay Blending')) {
+          // Apply the same width constraints as the layer header section
+          (section as HTMLElement).style.marginLeft = '16px';
+          (section as HTMLElement).style.marginRight = '16px';
+          (section as HTMLElement).style.width = 'calc(100% - 32px)';
+          (section as HTMLElement).style.boxSizing = 'border-box';
+          (section as HTMLElement).style.maxWidth = 'calc(100% - 32px)';
+          (section as HTMLElement).style.paddingLeft = '0';
+          (section as HTMLElement).style.paddingRight = '0';
+        }
+      });
+
+      // Target blending dropdown menus in MutationObserver
+      const mutationBlendingDropdowns = wrapperRef.current.querySelectorAll(
+        '[class*="DropdownList"], [class*="DropdownListWrapper"], [class*="DropdownListItem"], .dropdown-list__item'
+      );
+      
+      mutationBlendingDropdowns.forEach(dropdown => {
+        // Override dark backgrounds in blending dropdowns
+        (dropdown as HTMLElement).style.backgroundColor = '#ffffff';
+        (dropdown as HTMLElement).style.color = '#333333';
+        (dropdown as HTMLElement).style.border = '1px solid #d3d8e0';
+        
+        // Add hover effects for dynamically created dropdowns
+        dropdown.addEventListener('mouseenter', () => {
+          if (dropdown.classList.contains('selected') || dropdown.className.includes('selected')) {
+            (dropdown as HTMLElement).style.backgroundColor = '#e3f2fd';
+            (dropdown as HTMLElement).style.color = '#1976d2';
+          } else {
+            (dropdown as HTMLElement).style.backgroundColor = '#f8f9fa';
+            (dropdown as HTMLElement).style.color = '#333333';
+          }
+        });
+        
+        dropdown.addEventListener('mouseleave', () => {
+          if (dropdown.classList.contains('selected') || dropdown.className.includes('selected')) {
+            (dropdown as HTMLElement).style.backgroundColor = '#e3f2fd';
+            (dropdown as HTMLElement).style.color = '#1976d2';
+          } else {
+            (dropdown as HTMLElement).style.backgroundColor = '#ffffff';
+            (dropdown as HTMLElement).style.color = '#333333';
+          }
+        });
+      });
+
+      // Target ItemSelector components in blending sections (MutationObserver)
+      const mutationItemSelectors = wrapperRef.current.querySelectorAll('.side-panel-section .item-selector');
+      mutationItemSelectors.forEach(selector => {
+        // Target the dropdown button
+        const dropdownButton = selector.querySelector('.item-selector__dropdown');
+        if (dropdownButton) {
+          (dropdownButton as HTMLElement).style.backgroundColor = '#f7f7f7';
+          (dropdownButton as HTMLElement).style.border = '1px solid #d3d8e0';
+          (dropdownButton as HTMLElement).style.color = '#333333';
+        }
+
+        // Target the dropdown list
+        const dropdownList = selector.querySelector('.list-selector');
+        if (dropdownList) {
+          (dropdownList as HTMLElement).style.backgroundColor = '#ffffff';
+          (dropdownList as HTMLElement).style.borderTop = '1px solid #d3d8e0';
+          (dropdownList as HTMLElement).style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          
+          // Target list items
+          const listItems = dropdownList.querySelectorAll('.list__item');
+          listItems.forEach(item => {
+            (item as HTMLElement).style.backgroundColor = '#ffffff';
+            (item as HTMLElement).style.color = '#333333';
+            (item as HTMLElement).style.borderBottom = '1px solid #f0f0f0';
+            
+            // Target anchor tags
+            const anchor = item.querySelector('.list__item__anchor');
+            if (anchor) {
+              (anchor as HTMLElement).style.color = '#333333';
+            }
+          });
+        }
+      });
     };
 
     const observer = new MutationObserver(() => {
